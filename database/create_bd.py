@@ -11,7 +11,7 @@ TABLES = {} #Añadir tablas aqui
 TABLES['Skins'] = (
     "CREATE TABLE Skins ("
     "  skinId INT NOT NULL AUTO_INCREMENT,"
-    "  tipo BOOL NOT NULL,"
+    "  tipo BOOL NOT NULL," # 0 skin de ficha, 1 skin de tablero
     "  precio INT,"
     "  PRIMARY KEY (skinId)"
     ");")
@@ -20,7 +20,7 @@ TABLES['Usuarios'] = (
     "CREATE TABLE Usuarios ("
     "  correo VARCHAR(100) NOT NULL,"
     "  pwd TINYTEXT NOT NULL,"
-    "  nick VARCHAR(15) NOT NULL,"
+    "  nick VARCHAR(20) NOT NULL,"
     "  name VARCHAR(100) NOT NULL,"
     "  birthDate DATE NOT NULL,"
     "  foto TINYTEXT NOT NULL,"
