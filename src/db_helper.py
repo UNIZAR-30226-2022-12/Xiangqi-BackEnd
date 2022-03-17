@@ -10,10 +10,12 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               database='BDpsoft')
 
 getUserQuery = "SELECT * FROM Usuarios WHERE correo = %s"
+getAllUserQuery = "SELECT * FROM Usuarios"
+getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
 
-def getUserList():              
+def getAllUser():              
     cursor = cnx.cursor()
-    cursor.execute("SELECT * FROM Usuarios")
+    cursor.execute(getAllUserQuery)
 
     userList = cursor.fetchall()
     
@@ -21,9 +23,8 @@ def getUserList():
 
     return userList
 
-def loginUser(correo, pwd):
+def getUser(correo):
     exist = False
-    pwdOk = False
 
     cursor = cnx.cursor()
 
@@ -32,12 +33,21 @@ def loginUser(correo, pwd):
 
     if user != None :
         exist = True
-        if pwd == user[1]:
-            pwdOk = True
 
     cursor.close()
 
-    return exist, pwdOk, user
+    return exist, user
+
+def getUserGame(correo):
+
+    cursor = cnx.cursor()
+
+    cursor.execute(getUserGameQuery, (correo, correo))
+    game = cursor.fetchall()
+
+    cursor.close()
+
+    return game
 
 
 #cnx.close()

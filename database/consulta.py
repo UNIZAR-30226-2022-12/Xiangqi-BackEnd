@@ -12,9 +12,9 @@ cursor = cnx.cursor()
 
 cursor.execute("SELECT * FROM Usuarios")
 
-userList = cursor.fetchall()
-#for x in cursor.fetchall():
-print(userList)
+#userList = cursor.fetchall()
+for user in cursor.fetchall():
+    print(user)
 
 cnx.commit()
 

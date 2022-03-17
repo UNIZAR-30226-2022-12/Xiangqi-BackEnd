@@ -17,14 +17,23 @@
         const socket = io("http://localhost:8080");
 
         socket.on("return", function(data) {
+            console.log(data['exist']);
+            if (data['exist']) {
+                console.log(data['ok']);
+                if (data['ok']) {
+                    console.log(data['user']['birthDate'], data['user']['registerDate']);
+                    for (i = 0; i < data['game'].length; i++) {
+                        console.log(data['game'][i]['oponente'], data['game'][i]['tocaMover'])
+                    }
 
-            console.log(data);
+                }
+            }
         });
 
         function sendMsg() {
-            socket.emit("request", {
-                'email': '1@gmail',
-                'pwd': '1'
+            socket.emit("login", {
+                'email': '2@gmail',
+                'pwd': '12'
             })
             console.log("request");
         }

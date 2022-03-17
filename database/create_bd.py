@@ -22,17 +22,18 @@ TABLES['Usuarios'] = (
     "  pwd TINYTEXT NOT NULL,"
     "  nick VARCHAR(20) NOT NULL,"
     "  name VARCHAR(100) NOT NULL,"
-    "  birthDate DATE NOT NULL,"
+    "  birthDate VARCHAR(100) NOT NULL,"
     "  foto TINYTEXT NOT NULL,"
     "  pais VARCHAR(50) NOT NULL,"
     "  fichaSkin INT,"
     "  tableroSkin INT,"
     "  rango INT,"
     "  puntos INT,"
-    "  fechaRegistro DATE,"
+    "  fechaRegistro VARCHAR(100),"
     "  PRIMARY KEY (correo),"
     "  FOREIGN KEY (fichaSkin) REFERENCES Skins(skinId),"
     "  FOREIGN KEY (tableroSkin) REFERENCES Skins(skinId)"
+    "  ON DELETE CASCADE"
     ");")
 
 TABLES['Amigos'] = (
@@ -41,6 +42,7 @@ TABLES['Amigos'] = (
     "  usuario2 VARCHAR(100) NOT NULL,"
     "  FOREIGN KEY (usuario1) REFERENCES Usuarios(correo),"
     "  FOREIGN KEY (usuario2) REFERENCES Usuarios(correo)"
+    "  ON DELETE CASCADE"
     ");")
 
 TABLES['Tiene'] = (
@@ -49,6 +51,7 @@ TABLES['Tiene'] = (
     "  usuario VARCHAR(100) NOT NULL,"
     "  FOREIGN KEY (usuario) REFERENCES Usuarios(correo),"
     "  FOREIGN KEY (skinId) REFERENCES Skins(skinId)"
+    "  ON DELETE CASCADE"
     ");")
 
 TABLES['Partidas'] = (
@@ -57,12 +60,13 @@ TABLES['Partidas'] = (
     "  roja VARCHAR(100) NOT NULL,"
     "  negra VARCHAR(100) NOT NULL,"
     "  estado INT NOT NULL," #0 en curso, 1 gana rojo, 2 gana negra, 3 empate 
-    "  movimientos LONGTEXT,"
-    "  fechaInicio DATE,"
-    "  lastMove DATE,"
+    "  movimientos LONGTEXT," 
+    "  fechaInicio VARCHAR(100),"
+    "  lastMove VARCHAR(100),"
     "  PRIMARY KEY (id),"
     "  FOREIGN KEY (roja) REFERENCES Usuarios(correo),"
     "  FOREIGN KEY (negra) REFERENCES Usuarios(correo)"
+    "  ON DELETE CASCADE"
     ");")
 
 TABLES['Solicitudes'] = (
@@ -71,6 +75,7 @@ TABLES['Solicitudes'] = (
     "  destinatario VARCHAR(100) NOT NULL,"
     "  FOREIGN KEY (remitente) REFERENCES Usuarios(correo),"
     "  FOREIGN KEY (destinatario) REFERENCES Usuarios(correo)"
+    "  ON DELETE CASCADE" 
     ");")
 
 for table_name in TABLES:

@@ -1,5 +1,5 @@
 from aiohttp import web
-from db_helper import *
+from server_helper import *
 import socketio
 
 
@@ -20,8 +20,8 @@ async def index(request):
 ## If we wanted to create a new websocket endpoint,
 ## use this decorator, passing in the name of the
 ## event we wish to listen out for
-@sio.on('request')
-async def peticion(sid, message):
+@sio.on('login')
+async def login(sid, message):
     ## When we receive a new event of type
     ## 'message' through a socket.io connection
     ## we print the socket ID and the message
@@ -29,24 +29,11 @@ async def peticion(sid, message):
     print(message['email'])
     print(message['pwd'])
     
-    exist, pwdOk, user = loginUser(message['email'], message['pwd'])
-    print(exist, pwdOk, user)
-    returnValue = { 'exist': exist }
-    if exist:
-        returnValue['ok'] = pwdOk
-        if pwdOk:
-            returnValue['user'] = { 
-                'correo': user[0],
-                'nick': user[2],
-                'name': user[3],
-                'birthDate': user[4],
-                'pais': user[6],
-                'rango': user[9],
-                'puntos': user[10],
-                'registerDate': user[11]
-            }
+    returnValue = loginUser(message['email'], message['pwd'])
+
     #return returnValue
-    await sio.emit('return', (returnValue))
+    await sio.emit('return', returnValue)
+
     
 
 ## We bind our aiohttp endpoint to our app
