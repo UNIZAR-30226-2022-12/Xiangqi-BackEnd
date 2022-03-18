@@ -12,9 +12,10 @@ cursor = cnx.cursor()
 sql =  ("INSERT INTO Partidas (roja, negra, estado, movimientos, fechaInicio, lastMove) "
         "VALUE (%s, %s, %s, %s, %s, %s);")
 value = [
-        ("1@gmail", "2@gmail", 0, None, '2022-01-15', "2022-01-15"),
-        ("2@gmail", "3@gmail", 1, "1234", '2022-02-15', "2022-01-15"),
-        ("3@gmail", "1@gmail", 3, "34215432", '2022-03-15', "2022-01-15")
+        ("1@gmail", "2@gmail", 1, None, '2022-03-15', "2022-01-15"),
+        ("2@gmail", "1@gmail", 2, "1234", '2022-03-16', "2022-01-15"),
+        ("2@gmail", "1@gmail", 2, "34215432", '2022-03-10', "2022-01-15"),
+        ("2@gmail", "1@gmail", 0, "34215432", '2022-03-10', "2022-01-15")
 ]
 #sql =  ("SELECT * FROM Usuarios")
 

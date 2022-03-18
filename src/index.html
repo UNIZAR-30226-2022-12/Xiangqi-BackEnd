@@ -21,9 +21,14 @@
             if (data['exist']) {
                 console.log(data['ok']);
                 if (data['ok']) {
-                    console.log(data['user']['birthDate'], data['user']['registerDate']);
-                    for (i = 0; i < data['game'].length; i++) {
-                        console.log(data['game'][i]['oponente'], data['game'][i]['tocaMover'])
+                    console.log(data['perfil']['birthDate'], data['perfil']['registerDate']);
+                    for (i = 0; i < data['partidas'].length; i++) {
+                        console.log(data['partidas'][i]['oponente'], data['partidas'][i]['tocaMover'])
+                    }
+                    console.log(data['estadisticas']['totalJugadas'], data['estadisticas']['totalGanadas']);
+                    console.log(data['estadisticas']['ultimasJugadas'], data['estadisticas']['ultimasGanadas']);
+                    for (i = 0; i < data['estadisticas']['dia'].length; i++) {
+                        console.log(data['estadisticas']['dia'][i]);
                     }
 
                 }
@@ -32,8 +37,8 @@
 
         function sendLogin() {
             socket.emit("login", {
-                'email': '4@gmail',
-                'pwd': '1234'
+                'email': '2@gmail',
+                'pwd': '12'
             })
             console.log("login");
         }
@@ -48,12 +53,12 @@
 
         function sendRegister() {
             socket.emit("register", {
-                'email': '4@gmail',
-                'password': '1234',
-                'nickname': 'a4',
-                'name': 'alex4',
-                'date': '2022-03-18',
-                'image': '01010101',
+                'email': '1@gmail',
+                'password': '1',
+                'nickname': 'a1',
+                'name': 'alex1',
+                'date': '2022-03-16',
+                'image': 'alex1',
                 'country': 'CHN'
             })
             console.log("register");

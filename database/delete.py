@@ -11,6 +11,8 @@ cursor = cnx.cursor()
 #sql =  ("SELECT * FROM Usuarios")
 
 
-cursor.execute("DELETE FROM Usuarios WHERE correo = '4@gmail'")
+cursor.execute("DELETE FROM Usuarios WHERE correo = '1@gmail'")
 
 cnx.commit()
+
+cursor.close()

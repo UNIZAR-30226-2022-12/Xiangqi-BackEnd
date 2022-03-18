@@ -4,6 +4,7 @@
 #
 #----------------------------------------------------------------
 import mysql.connector
+from mysql.connector import RefreshOption
 
 cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
@@ -12,10 +13,11 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
 getUserQuery = "SELECT * FROM Usuarios WHERE correo = %s"
 getAllUserQuery = "SELECT * FROM Usuarios"
 getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
-insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, nick, name, birthDate, foto, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
+insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, nick, name, birthDate, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
         "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
 
-def getAllUser():              
+def getAllUser(): 
+    cnx.cmd_refresh(RefreshOption.GRANT)             
     cursor = cnx.cursor()
     cursor.execute(getAllUserQuery)
 
@@ -26,6 +28,7 @@ def getAllUser():
     return userList
 
 def getUser(correo):
+    cnx.cmd_refresh(RefreshOption.GRANT)
     exist = False
 
     cursor = cnx.cursor()
@@ -41,6 +44,7 @@ def getUser(correo):
     return exist, user
 
 def getUserGame(correo):
+    cnx.cmd_refresh(RefreshOption.GRANT)
 
     cursor = cnx.cursor()
 
@@ -52,6 +56,7 @@ def getUserGame(correo):
     return game
 
 def insertUser(user):
+    cnx.cmd_refresh(RefreshOption.GRANT)
     try:
         cursor = cnx.cursor()
         exito = True
