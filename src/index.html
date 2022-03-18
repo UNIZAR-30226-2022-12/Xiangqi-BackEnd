@@ -10,13 +10,13 @@
 </head>
 
 <body>
-    <button onClick="sendMsg()">Hit Me</button>
+    <button onClick="sendLogin()">login</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script>
         const socket = io("http://localhost:8080");
 
-        socket.on("return", function(data) {
+        socket.on("returnLogin", function(data) {
             console.log(data['exist']);
             if (data['exist']) {
                 console.log(data['ok']);
@@ -30,12 +30,33 @@
             }
         });
 
-        function sendMsg() {
+        function sendLogin() {
             socket.emit("login", {
-                'email': '2@gmail',
-                'pwd': '12'
+                'email': '4@gmail',
+                'pwd': '1234'
             })
-            console.log("request");
+            console.log("login");
+        }
+    </script>
+    <button onClick="sendRegister()">register</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+        socket.on("returnRegister", function(data) {
+            console.log(data['exito']);
+        });
+
+        function sendRegister() {
+            socket.emit("register", {
+                'email': '4@gmail',
+                'password': '1234',
+                'nickname': 'a4',
+                'name': 'alex4',
+                'date': '2022-03-18',
+                'image': '01010101',
+                'country': 'CHN'
+            })
+            console.log("register");
         }
     </script>
 </body>

@@ -12,6 +12,8 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
 getUserQuery = "SELECT * FROM Usuarios WHERE correo = %s"
 getAllUserQuery = "SELECT * FROM Usuarios"
 getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
+insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, nick, name, birthDate, foto, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
+        "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
 
 def getAllUser():              
     cursor = cnx.cursor()
@@ -48,6 +50,23 @@ def getUserGame(correo):
     cursor.close()
 
     return game
+
+def insertUser(user):
+    try:
+        cursor = cnx.cursor()
+        exito = True
+
+        cursor.execute(insertUserQuery, user)
+        cnx.commit()
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to insert record into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        print("MySQL connection is closed")
+        return exito
+
 
 
 #cnx.close()

@@ -21,18 +21,26 @@ async def index(request):
 ## use this decorator, passing in the name of the
 ## event we wish to listen out for
 @sio.on('login')
-async def login(sid, message):
+async def login(sid, data):
     ## When we receive a new event of type
     ## 'message' through a socket.io connection
     ## we print the socket ID and the message
     print("Socket ID: " , sid)
-    print(message['email'])
-    print(message['pwd'])
+    print(data['email'])
+    print(data['pwd'])
     
-    returnValue = loginUser(message['email'], message['pwd'])
+    returnValue = loginUser(data)
 
     #return returnValue
-    await sio.emit('return', returnValue)
+    await sio.emit('returnLogin', returnValue)
+
+@sio.on('register')
+async def register(sid, data):
+    print("LLEGA LA REQUEST DE REGISTRO de ", sid)
+
+    returnValue = registerUser(data)
+
+    await sio.emit('returnRegister', returnValue)
 
     
 
