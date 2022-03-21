@@ -15,6 +15,7 @@ getAllUserQuery = "SELECT * FROM Usuarios"
 getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
 insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, nick, name, birthDate, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
         "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
+validateUserQuery = "UPDATE Usuarios SET validado = True WHERE correo = %s"
 
 def getAllUser(): 
     cnx.cmd_refresh(RefreshOption.GRANT)             
@@ -71,7 +72,22 @@ def insertUser(user):
         cursor.close()
         print("MySQL connection is closed")
         return exito
+        
+def validateUser(correo):
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(validateUserQuery, (correo,))
+        exito = True
 
+        cnx.commit()
 
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to validate user into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        print("MySQL connection is closed")
+        return exito
 
 #cnx.close()

@@ -51,11 +51,19 @@ def do_login(data: LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.post("/do-login")
-def do_validate(email: str):
+@app.post("/do-profile")
+def do_profile(data: EmailData):
     #insertar en db imagen como blob?
     
-    returnValue = validateUser(email)
+    returnValue = perfil(data)
+    #respuesta del back al front
+    return returnValue
+
+@app.post("/do-login")
+def do_validate(data: EmailData):
+    #insertar en db imagen como blob?
+    
+    returnValue = validate(data)
     #respuesta del back al front
     return returnValue
 

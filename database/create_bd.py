@@ -21,6 +21,7 @@ TABLES['Usuarios'] = (
     "  correo VARCHAR(100) NOT NULL,"
     "  pwd TINYTEXT NOT NULL,"
     "  salt TINYTEXT NOT NULL,"
+    "  validado BOOLEAN,"
     "  nick VARCHAR(20) NOT NULL,"
     "  name VARCHAR(100) NOT NULL,"
     "  birthDate VARCHAR(100) NOT NULL,"

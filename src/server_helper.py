@@ -148,12 +148,18 @@ def registerUser(data : User):
 
 def perfil(data):
     
-    exist, user = getUser(data['email'])
+    exist, user = getUser(data)
 
     returnValue = { 'exist': exist } 
     if exist: #si existe el usuario
         returnValue['perfil'] = userProfile(user[0])
-        returnValue['partidas'] = userGames(data['email'])
-        returnValue['estadisticas'] = profileStatistics(data['email'])
+        returnValue['partidas'] = userGames(data)
+        returnValue['estadisticas'] = profileStatistics(data)
+
+    return returnValue
+
+def validate(data):
+    
+    returnValue = validateUser(data.email)
 
     return returnValue
