@@ -115,11 +115,11 @@ def profileStatistics(correo):
 
 def loginUser(data):
     
-    exist, user = getUser(data['email'])
+    exist, user = getUser(data.email)
 
     returnValue = { 'exist': exist, 'ok': False}
     if exist: #si existe el usuario
-        returnValue['ok'] = checkPwd(data['pwd'], user[2], user[1])
+        returnValue['ok'] = checkPwd(data.pwd, user[2], user[1])
 
     return returnValue
 

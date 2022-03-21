@@ -12,3 +12,7 @@ class User(BaseModel):
     date: datetime.datetime
     country: Country
     pwd: str
+
+class LoginData(BaseModel):
+    email: str
+    pwd: str
