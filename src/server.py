@@ -42,7 +42,13 @@ async def register(sid, data):
 
     await sio.emit('returnRegister', returnValue)
 
-    
+@sio.on('profile')
+async def profile(sid, data):
+    print("LLEGA LA REQUEST DE PERFIL de ", sid)
+
+    returnValue = perfil(data)
+
+    await sio.emit('returnProfile', returnValue)   
 
 ## We bind our aiohttp endpoint to our app
 ## router

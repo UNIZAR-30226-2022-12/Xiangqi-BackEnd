@@ -7,6 +7,7 @@ import datetime
 import hashlib
 import os
 from db_helper import *
+from clases import *
 
 #------------------
 #Usuarios: 0:correo, 1:pwd, 2:salt, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro
@@ -116,25 +117,20 @@ def loginUser(data):
     
     exist, user = getUser(data['email'])
 
-    returnValue = { 'exist': exist }
+    returnValue = { 'exist': exist, 'ok': False}
     if exist: #si existe el usuario
-        pwdOk = checkPwd(data['pwd'], user[2], user[1])
-        if pwdOk: #si la contraseña empareja
-            returnValue['ok'] = pwdOk
-            returnValue['perfil'] = userProfile(user[0])
-            returnValue['partidas'] = userGames(data['email'])
-            returnValue['estadisticas'] = profileStatistics(data['email'])
+        returnValue['ok'] = checkPwd(data['pwd'], user[2], user[1])
 
     return returnValue
 
-def registerUser(data):
+def registerUser(data : User):
 
-    exist, _ = getUser(data['email'])
+    exist, _ = getUser(data.email)
 
-    returnValue = { 'exito': not exist }
+    returnValue = False
     if not exist: #si no existe el usuario
         #Guardar foto
-        f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data['email']) + ".jpg", 'wb')
+        f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".jpg", 'wb')
         f.write(data['image'])
         #f = open("" + str(data['email']) + ".jpg", 'wb')
         #f.write(data['image'].encode())
@@ -142,11 +138,22 @@ def registerUser(data):
         #Crear contraseña hasheada
         salt = os.urandom(32).hex()
         hash = hashlib.sha512()
-        hash.update(('%s%s' % (salt, data['password'])).encode('utf-8'))
+        hash.update(('%s%s' % (salt, data.pwd)).encode('utf-8'))
         password_hash = hash.hexdigest()
 
-        user = [data['email'], password_hash, salt, data['nickname'], data['name'], data['date'], data['country'], None, None, 0, 0, str(datetime.date.today())]
-        exito = insertUser(user)
-        returnValue['exito'] = exito
+        user = [data.email, password_hash, salt, data.nickname, data.name, data.date, data.country, None, None, 0, 0, str(datetime.date.today())]
+        returnValue = insertUser(user)
+
+    return returnValue
+
+def perfil(data):
+    
+    exist, user = getUser(data['email'])
+
+    returnValue = { 'exist': exist } 
+    if exist: #si existe el usuario
+        returnValue['perfil'] = userProfile(user[0])
+        returnValue['partidas'] = userGames(data['email'])
+        returnValue['estadisticas'] = profileStatistics(data['email'])
 
     return returnValue

@@ -11,3 +11,21 @@ src/index.html: html de prueba, se lanza en localhost:8080, despues de lanza el 
 src/db_helper.py: modulo para interactuar con BD
 
 src/server_helper.py: modulo para obtener informacion a devolver de las peticiones
+
+# Instalacion
+### Instalar pip3
+```
+sudo apt install python3-pip
+```
+### Instalar dependencias
+```
+pip3 install -r requirements.txt
+```
+### lanzar uvicorn
+```
+uvicorn main:app --reload --host 0.0.0.0
+```
+### acceso a fastapi
+```
+localhost:8000/doc
+```
