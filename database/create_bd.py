@@ -30,6 +30,7 @@ TABLES['Usuarios'] = (
     "  rango INT,"
     "  puntos INT,"
     "  fechaRegistro VARCHAR(100),"
+    "  cuentaValida INT NOT NULL," #0 = no validada; 1 = validada;
     "  PRIMARY KEY (correo),"
     "  FOREIGN KEY (fichaSkin) REFERENCES Skins(skinId)"
     "  ON DELETE SET NULL,"
