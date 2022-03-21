@@ -43,11 +43,19 @@ def do_create(user: User):
     return returnValue
 
 @app.post("/do-login")
-def do_login(email: str, password: str):
+def do_login(data: LoginData):
     #insertar en db imagen como blob?
     
-    returnValue = loginUser({"email": email, "pwd": password})
-    print(password,)
+    returnValue = loginUser(data.email, data.pwd)
+    
+    #respuesta del back al front
+    return returnValue
+
+@app.post("/do-login")
+def do_validate(email: str):
+    #insertar en db imagen como blob?
+    
+    returnValue = validateUser(email)
     #respuesta del back al front
     return returnValue
 
