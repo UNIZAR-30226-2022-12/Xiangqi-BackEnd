@@ -10,7 +10,7 @@ from db_helper import *
 from clases import *
 
 #------------------
-#Usuarios: 0:correo, 1:pwd, 2:salt, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro
+#Usuarios: 0:correo, 1:pwd, 2:salt, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro, 12: cuentaValida
 #Partidas: 0:id, 1:roja, 2:negra, 3:estado, 4:movimientos, 5:fechaInicio, 6:lastMove
 
 #------------------
