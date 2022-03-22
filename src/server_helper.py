@@ -6,6 +6,9 @@
 import datetime
 import hashlib
 import os
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from db_helper import *
 from clases import *
 
@@ -117,10 +120,10 @@ def loginUser(data):
     
     exist, user = getUser(data.email)
 
-    returnValue = { 'exist': exist, 'ok': False}
+    returnValue = { 'exist': exist, 'ok': False, 'cuentaValida': False}
     if exist: #si existe el usuario
         returnValue['ok'] = checkPwd(data.pwd, user[2], user[1])
-
+        returnValue['cuentaValida'] = checkAccount(data.cuentaValida,user[12])
     return returnValue
 
 def registerUser(data : User):
@@ -156,4 +159,49 @@ def perfil(data):
         returnValue['partidas'] = userGames(data['email'])
         returnValue['estadisticas'] = profileStatistics(data['email'])
 
+    return returnValue
+
+def checkAccount(acc, userAccount):
+    if acc == userAccount: 
+        return True
+    else:
+        return False
+
+
+def validateUser(email):
+
+    sender_email = "xiangqips@gmail.com"
+    receiver_email = email
+    password = "Xiangqi2022" 
+    
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Confirmación de la cuenta de usuario"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    
+    # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
+    html = """\
+    <html>
+        <body>
+            <p><b>Validación de la cuenta de usuario</b>
+                Haz click en el enlace <a href="">Validar Cuenta</a> 
+                para validar tu cuenta de usuario.
+            </p>
+        </body>
+    </html>
+    """
+    
+    contenido = MIMEText(html,"html")
+    
+    message.attach(contenido)
+    
+    context = ssl.create_default_context
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(
+            sender_email, receiver_email, message.as_string()
+        )
+
+    returnValue = {'cuentaValida'}
+    returnValue['cuentaValida'] = True
     return returnValue
