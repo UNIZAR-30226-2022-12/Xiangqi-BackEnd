@@ -21,9 +21,13 @@ sudo apt install python3-pip
 ```
 pip3 install -r requirements.txt
 ```
-### lanzar uvicorn
+### lanzar uvicorn local
 ```
 uvicorn main:app --reload --host 0.0.0.0
+```
+### lanzar uvicorn maquina virtual
+```
+uvicorn main:app --reload --host 0.0.0.0 --port 3000
 ```
 ### acceso a fastapi
 ```
