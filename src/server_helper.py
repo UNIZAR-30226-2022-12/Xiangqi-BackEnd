@@ -13,7 +13,7 @@ from db_helper import *
 from clases import *
 
 #------------------
-#Usuarios: 0:correo, 1:pwd, 2:salt, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro, 12: cuentaValida
+#Usuarios: 0:correo, 1:pwd, 2:salt, 3:validacion, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro, 12: cuentaValida
 #Partidas: 0:id, 1:roja, 2:negra, 3:estado, 4:movimientos, 5:fechaInicio, 6:lastMove
 
 #------------------
@@ -120,11 +120,10 @@ def loginUser(data):
     
     exist, user = getUser(data.email)
 
-    returnValue = { 'exist': exist, 'ok': False, 'cuentaValida': False}
+    returnValue = { 'exist': exist, 'ok': False, 'validacion': False}
     if exist: #si existe el usuario
         returnValue['ok'] = checkPwd(data.pwd, user[2], user[1])
-        #!!
-        returnValue['cuentaValida'] = checkAccount(data.cuentaValida,user[12])
+        returnValue['validacion'] = user[3]
     return returnValue
 
 def registerUser(data : User):
@@ -134,10 +133,10 @@ def registerUser(data : User):
     returnValue = False
     if not exist: #si no existe el usuario
         #Guardar foto
-        f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".jpg", 'wb')
-        f.write(data['image'])
-        #f = open("" + str(data['email']) + ".jpg", 'wb')
-        #f.write(data['image'].encode())
+        #f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".jpg", 'wb')
+        #f.write(data['image'])
+        f = open("" + str(data['email']) + ".jpg", 'wb')
+        f.write(data['image'].encode())
         f.close()
         #Crear contraseña hasheada
         salt = os.urandom(32).hex()
@@ -145,7 +144,7 @@ def registerUser(data : User):
         hash.update(('%s%s' % (salt, data.pwd)).encode('utf-8'))
         password_hash = hash.hexdigest()
 
-        user = [data.email, password_hash, salt, data.nickname, data.name, data.date, data.country, None, None, 0, 0, str(datetime.date.today())]
+        user = [data.email, password_hash, salt, False, data.nickname, data.name, data.date, data.country, None, None, 0, 0, str(datetime.date.today())]
         returnValue = insertUser(user)
 
     return returnValue
@@ -167,14 +166,6 @@ def validate(data):
     returnValue = validateUser(data.email)
 
     return returnValue
-
-#!!
-def checkAccount(acc, userAccount):
-    if acc == userAccount: 
-        return True
-    else:
-        return False
-
 
 def validateUser(email):
 

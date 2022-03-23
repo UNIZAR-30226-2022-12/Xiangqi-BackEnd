@@ -13,8 +13,8 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
 getUserQuery = "SELECT * FROM Usuarios WHERE correo = %s"
 getAllUserQuery = "SELECT * FROM Usuarios"
 getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
-insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, nick, name, birthDate, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
-        "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
+insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, validacion, nick, name, birthDate, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
+        "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
 validateUserQuery = "UPDATE Usuarios SET validado = True WHERE correo = %s"
 
 def getAllUser(): 
