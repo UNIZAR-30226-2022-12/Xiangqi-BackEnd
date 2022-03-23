@@ -34,10 +34,10 @@ def read_item(item_id: int, q: Optional[str] = None):
 #El metodo do-create que el AccountService del front tiene que llamar (te mete un usuario)
 #http://localhost:8000/docs/    <- para debuguear puedes hacer peticiones al backend (do-create), execute y ver en el response los detalles de que devuelve
 @app.post("/do-create")
-def do_create(user: User):
+def do_create(data: User):
     #insertar en db imagen como blob?
     
-    returnValue = registerUser(user)
+    returnValue = registerUser(data)
 
     #respuesta del back al front
     return returnValue
@@ -46,7 +46,7 @@ def do_create(user: User):
 def do_login(data: LoginData):
     #insertar en db imagen como blob?
     
-    returnValue = loginUser(data.email, data.pwd)
+    returnValue = loginUser(data)
     
     #respuesta del back al front
     return returnValue
@@ -59,7 +59,7 @@ def do_profile(data: EmailData):
     #respuesta del back al front
     return returnValue
 
-@app.post("/do-login")
+@app.post("/do-validate")
 def do_validate(data: EmailData):
     #insertar en db imagen como blob?
     

@@ -123,6 +123,7 @@ def loginUser(data):
     returnValue = { 'exist': exist, 'ok': False, 'cuentaValida': False}
     if exist: #si existe el usuario
         returnValue['ok'] = checkPwd(data.pwd, user[2], user[1])
+        #!!
         returnValue['cuentaValida'] = checkAccount(data.cuentaValida,user[12])
     return returnValue
 
@@ -167,6 +168,7 @@ def validate(data):
 
     return returnValue
 
+#!!
 def checkAccount(acc, userAccount):
     if acc == userAccount: 
         return True
