@@ -36,6 +36,7 @@ TABLES['Usuarios'] = (
     "  ON DELETE SET NULL,"
     "  FOREIGN KEY (tableroSkin) REFERENCES Skins(skinId)"
     "  ON DELETE SET NULL"
+    "  "
     ");")
 
 TABLES['Amigos'] = (
