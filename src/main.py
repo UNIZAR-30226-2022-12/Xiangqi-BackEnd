@@ -63,7 +63,15 @@ def do_profile(data: EmailData):
 def do_validate(data: EmailData):
     #insertar en db imagen como blob?
     
-    returnValue = validate(data)
+    validate(data)
+    #respuesta del back al front
+    return True
+
+@app.post("/do-country")
+def do_country():
+    #insertar en db imagen como blob?
+    
+    returnValue = allCountry()
     #respuesta del back al front
     return returnValue
 

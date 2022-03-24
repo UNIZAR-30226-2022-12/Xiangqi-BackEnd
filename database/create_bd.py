@@ -8,6 +8,14 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
 cursor = cnx.cursor()
 
 TABLES = {} #Añadir tablas aqui
+TABLES['Country'] = (
+    "CREATE TABLE Country ("
+    "  name VARCHAR(50) NOT NULL,"
+    "  code VARCHAR(5) NOT NULL," # 0 skin de ficha, 1 skin de tablero
+    "  bandera VARCHAR(20),"
+    "  PRIMARY KEY (name)"
+    ");")
+
 TABLES['Skins'] = (
     "CREATE TABLE Skins ("
     "  skinId INT NOT NULL AUTO_INCREMENT,"
@@ -21,23 +29,23 @@ TABLES['Usuarios'] = (
     "  correo VARCHAR(100) NOT NULL,"
     "  pwd TINYTEXT NOT NULL,"
     "  salt TINYTEXT NOT NULL,"
-    "  validado BOOLEAN,"
+    "  validacion BOOLEAN,"
     "  nick VARCHAR(20) NOT NULL,"
     "  name VARCHAR(100) NOT NULL,"
-    "  birthDate VARCHAR(100) NOT NULL,"
-    "  pais VARCHAR(50) NOT NULL,"
+    "  birthDate VARCHAR(20) NOT NULL,"
+    "  pais VARCHAR(20),"
     "  fichaSkin INT,"
     "  tableroSkin INT,"
     "  rango INT,"
     "  puntos INT,"
-    "  fechaRegistro VARCHAR(100),"
-    "  cuentaValida INT NOT NULL," #0 = no validada; 1 = validada;
+    "  fechaRegistro VARCHAR(20),"
     "  PRIMARY KEY (correo),"
+    "  FOREIGN KEY (pais) REFERENCES Country(name)"
+    "  ON DELETE SET NULL,"
     "  FOREIGN KEY (fichaSkin) REFERENCES Skins(skinId)"
     "  ON DELETE SET NULL,"
     "  FOREIGN KEY (tableroSkin) REFERENCES Skins(skinId)"
     "  ON DELETE SET NULL"
-    "  "
     ");")
 
 TABLES['Amigos'] = (

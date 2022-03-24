@@ -1,0 +1,238 @@
+Andorra;AD;flag-ad
+United Arab Emirates;AE;flag-ae
+Afghanistan;AF;flag-af
+Antigua and Barbuda;AG;flag-ag
+Anguilla;AI;flag-ai
+Albania;AL;flag-al
+Armenia;AM;flag-am
+Netherlands Antilles;AN;flag-an
+Angola;AO;flag-ao
+Antarctica;AQ;flag-aq
+Argentina;AR;flag-ar
+American Samoa;AS;flag-as
+Austria;AT;flag-at
+Australia;AU;flag-au
+Aruba;AW;flag-aw
+Azerbaijan;AZ;flag-az
+Bosnia and Herzegovina;BA;flag-ba
+Barbados;BB;flag-bb
+Bangladesh;BD;flag-bd
+Belgium;BE;flag-be
+Burkina Faso;BF;flag-bf
+Bulgaria;BG;flag-bg
+Bahrain;BH;flag-bh
+Burundi;BI;flag-bi
+Benin;BJ;flag-bj
+Bermuda;BM;flag-bm
+Brunei Darussalam;BN;flag-bn
+Bolivia;BO;flag-bo
+Brazil;BR;flag-br
+Bahamas;BS;flag-bs
+Bhutan;BT;flag-bt
+Bouvet Island;BV;flag-bv
+Botswana;BW;flag-bw
+Belarus;BY;flag-by
+Belize;BZ;flag-bz
+Canada;CA;flag-ca
+Cocos (Keeling) Islands;CC;flag-cc
+"The Democratic Republic of the Congo";CD;flag-cd
+Central African Republic;CF;flag-cf
+Congo;CG;flag-cg
+Switzerland;CH;flag-ch
+Cote D'Ivoire;CI;flag-ci
+Cook Islands;CK;flag-ck
+Chile;CL;flag-cl
+Cameroon;CM;flag-cm
+China;CN;flag-cn
+Colombia;CO;flag-co
+Costa Rica;CR;flag-cr
+Serbia and Montenegro;CS;
+Cuba;CU;flag-cu
+Cape Verde;CV;flag-cv
+Christmas Island;CX;flag-cx
+Cyprus;CY;flag-cy
+Czech Republic;CZ;flag-cz
+Germany;DE;flag-de
+Djibouti;DJ;flag-dj
+Denmark;DK;flag-dk
+Dominica;DM;flag-dm
+Dominican Republic;DO;flag-do
+Algeria;DZ;flag-dz
+Ecuador;EC;flag-ec
+Estonia;EE;flag-ee
+Egypt;EG;flag-eg
+Western Sahara;EH;flag-eh
+Eritrea;ER;flag-er
+Spain;ES;flag-es
+Ethiopia;ET;flag-et
+Finland;FI;flag-fi
+Fiji;FJ;flag-fj
+Falkland Islands (Malvinas);FK;flag-fk
+Federated States of Micronesia;FM;flag-fm
+Faroe Islands;FO;flag-fo
+France;FR;flag-fr
+Gabon;GA;flag-ga
+United Kingdom;GB;flag-gb
+Grenada;GD;flag-gd
+Georgia;GE;flag-ge
+French Guiana;GF;flag-gf
+Ghana;GH;flag-gh
+Gibraltar;GI;flag-gi
+Greenland;GL;flag-gl
+Gambia;GM;flag-gm
+Guinea;GN;flag-gn
+Guadeloupe;GP;flag-gp
+Equatorial Guinea;GQ;flag-gq
+Greece;GR;flag-gr
+South Georgia and the South Sandwich Islands;GS;flag-gs
+Guatemala;GT;flag-gt
+Guam;GU;flag-gu
+Guinea-Bissau;GW;flag-gw
+Guyana;GY;flag-gy
+Hong Kong;HK;flag-hk
+Heard Island and Mcdonald Islands;HM;flag-hm
+Honduras;HN;flag-hn
+Croatia;HR;flag-hr
+Haiti;HT;flag-ht
+Hungary;HU;flag-hu
+Indonesia;ID;flag-id
+Ireland;IE;flag-ie
+Israel;IL;flag-il
+India;IN;flag-in
+British Indian Ocean Territory;IO;flag-io
+Iraq;IQ;flag-iq
+"Islamic Republic Of Iran";IR;flag-ir
+Iceland;IS;flag-is
+Italy;IT;flag-it
+Jamaica;JM;flag-jm
+Jordan;JO;flag-jo
+Japan;JP;flag-jp
+Kenya;KE;flag-ke
+Kyrgyzstan;KG;flag-kg
+Cambodia;KH;flag-kh
+Kiribati;KI;flag-ki
+Comoros;KM;flag-km
+Saint Kitts and Nevis;KN;flag-kn
+Democratic People's Republic of Korea;KP;flag-kp
+Republic of Korea;KR;flag-kr
+Kuwait;KW;flag-kw
+Cayman Islands;KY;flag-ky
+Kazakhstan;KZ;flag-kz
+Democratic Republic Lao People's;LA;flag-la
+Lebanon;LB;flag-lb
+Saint Lucia;LC;flag-lc
+Liechtenstein;LI;flag-li
+Sri Lanka;LK;flag-lk
+Liberia;LR;flag-lr
+Lesotho;LS;flag-ls
+Lithuania;LT;flag-lt
+Luxembourg;LU;flag-lu
+Latvia;LV;flag-lv
+Libyan Arab Jamahiriya;LY;flag-ly
+Morocco;MA;flag-ma
+Monaco;MC;flag-mc
+Republic of Moldova;MD;flag-md
+Madagascar;MG;flag-mg
+Marshall Islands;MH;flag-mh
+The Former Yugoslav Republic of Macedonia;MK;flag-mk
+Mali;ML;flag-ml
+Myanmar;MM;flag-mm
+Mongolia;MN;flag-mn
+Macao;MO;flag-mo
+Northern Mariana Islands;MP;flag-mp
+Martinique;MQ;flag-mq
+Mauritania;MR;flag-mr
+Montserrat;MS;flag-ms
+Malta;MT;flag-mt
+Mauritius;MU;flag-mu
+Maldives;MV;flag-mv
+Malawi;MW;flag-mw
+Mexico;MX;flag-mx
+Malaysia;MY;flag-my
+Mozambique;MZ;flag-mz
+Namibia;NA;flag-na
+New Caledonia;NC;flag-nc
+Niger;NE;flag-ne
+Norfolk Island;NF;flag-nf
+Nigeria;NG;flag-ng
+Nicaragua;NI;flag-ni
+Netherlands;NL;flag-nl
+Norway;NO;flag-no
+Nepal;NP;flag-np
+Nauru;NR;flag-nr
+Niue;NU;flag-nu
+New Zealand;NZ;flag-nz
+Oman;OM;flag-om
+Panama;PA;flag-pa
+Peru;PE;flag-pe
+French Polynesia;PF;flag-pf
+Papua New Guinea;PG;flag-pg
+Philippines;PH;flag-ph
+Pakistan;PK;flag-pk
+Poland;PL;flag-pl
+Saint Pierre and Miquelon;PM;flag-pm
+Pitcairn;PN;flag-pn
+Puerto Rico;PR;flag-pr
+Portugal;PT;flag-pt
+Palau;PW;flag-pw
+Paraguay;PY;flag-py
+Qatar;QA;flag-qa
+Reunion;RE;flag-re
+Romania;RO;flag-ro
+Russian Federation;RU;flag-ru
+RWANDA;RW;flag-rw
+Saudi Arabia;SA;flag-sa
+Solomon Islands;SB;flag-sb
+Seychelles;SC;flag-sc
+Sudan;SD;flag-sd
+Sweden;SE;flag-se
+Singapore;SG;flag-sg
+Saint Helena;SH;flag-sh
+Slovenia;SI;flag-si
+Svalbard and Jan Mayen;SJ;flag-sj
+Slovakia;SK;flag-sk
+Sierra Leone;SL;flag-sl
+San Marino;SM;flag-sm
+Senegal;SN;flag-sn
+Somalia;SO;flag-so
+Suriname;SR;flag-sr
+Sao Tome and Principe;ST;flag-st
+El Salvador;SV;flag-sv
+Syrian Arab Republic;SY;flag-sy
+Swaziland;SZ;flag-sz
+Turks and Caicos Islands;TC;flag-tc
+Chad;TD;flag-td
+French Southern Territories;TF;flag-tf
+Togo;TG;flag-tg
+Thailand;TH;flag-th
+Tajikistan;TJ;flag-tj
+Tokelau;TK;flag-tk
+Timor-Leste;TL;flag-tl
+Turkmenistan;TM;flag-tm
+Tunisia;TN;flag-tn
+Tonga;TO;flag-to
+Turkey;TR;flag-tr
+Trinidad and Tobago;TT;flag-tt
+Tuvalu;TV;flag-tv
+"Province of China Taiwan";TW;flag-tw
+"United Republic of Tanzania";TZ;flag-tz
+Ukraine;UA;flag-ua
+Uganda;UG;flag-ug
+United States Minor Outlying Islands;UM;flag-um
+United States;US;flag-us
+Uruguay;UY;flag-uy
+Uzbekistan;UZ;flag-uz
+Holy See (Vatican City State);VA;flag-va
+Saint Vincent and the Grenadines;VC;flag-vc
+Venezuela;VE;flag-ve
+Virgin Islands British;VG;flag-vg
+Virgin Islands U.S.;VI;flag-vi
+Viet Nam;VN;flag-vn
+Vanuatu;VU;flag-vu
+Wallis and Futuna;WF;flag-wf
+Samoa;WS;flag-ws
+Yemen;YE;flag-ye
+Mayotte;YT;flag-za
+South Africa;ZA;flag-zm
+Zambia;ZM;flag-zr
+Zimbabwe;ZW ;flag-zw

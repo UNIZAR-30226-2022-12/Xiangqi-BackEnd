@@ -9,7 +9,7 @@ cursor = cnx.cursor()
 sql = "SET FOREIGN_KEY_CHECKS = 0"
 cursor.execute(sql)
 if len(sys.argv) == 1:
-    table = ["Usuarios", "Skins", "Tiene", "Amigos", "Partidas", "Solicitudes"]
+    table = ["Usuarios", "Skins", "Tiene", "Amigos", "Partidas", "Solicitudes", "Country"]
     for i in table:
         print("DROP TABLE \'" + i + "\'... ")
         sql = "DROP TABLE IF EXISTS " + i

@@ -10,7 +10,7 @@ cursor = cnx.cursor()
 #sql =  ("SELECT * FROM Usuarios")
 
 
-cursor.execute("SELECT * FROM Usuarios")
+cursor.execute("SELECT * FROM Country")
 
 #userList = cursor.fetchall()
 for user in cursor.fetchall():
