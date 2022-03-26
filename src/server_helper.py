@@ -37,8 +37,8 @@ def checkPwd(pwd, salt, password):
 
 def userProfile(correo):
     _, user = getUser(correo)
-    #foto = open("/home/ubuntu/pythonSRVR/profiles/" + str(user[Usuarios.correo]) + ".jpg", 'r')
-    foto = open("" + str(user[Usuarios.correo]) + ".jpg", 'r')
+    foto = open("/home/ubuntu/pythonSRVR/profiles/" + str(user[Usuarios.correo]) + ".jpg", 'r')
+    #foto = open("" + str(user[Usuarios.correo]) + ".jpg", 'r')
     returnValue = { #obtener informacion del usuario
         'foto': foto.read(),
         'correo': user[Usuarios.correo],
@@ -71,8 +71,8 @@ def userGames(correo):
             tocaMover = turnoRoja(game[Partidas.movimientos])
             if game[Partidas.estado] == 1: #gana roja
                 gana = True
-        #foto = open("/home/ubuntu/pythonSRVR/profiles/" + str(oponente[0]) + ".jpg", 'r')
-        foto = open("" + str(oponente[Usuarios.correo]) + ".jpg", 'r')
+        foto = open("/home/ubuntu/pythonSRVR/profiles/" + str(oponente[0]) + ".jpg", 'r')
+        #foto = open("" + str(oponente[Usuarios.correo]) + ".jpg", 'r')
         gameData = {
             'foto': foto.read(),
             'oponente': oponente[Usuarios.nick],
@@ -142,10 +142,10 @@ def registerUser(data : User):
     returnValue = False
     if not exist: #si no existe el usuario
         #Guardar foto
-        #f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".jpg", 'wb')
-        #f.write(data['image'])
-        f = open("" + str(data.email) + ".jpg", 'wb')
-        f.write(data.email.encode())
+        f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".jpg", 'wb')
+        f.write(data['image'])
+        #f = open("" + str(data.email) + ".jpg", 'wb')
+        #f.write(data.email.encode())
         f.close()
         #Crear contraseña hasheada
         salt = os.urandom(32).hex()

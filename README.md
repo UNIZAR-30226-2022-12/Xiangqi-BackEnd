@@ -31,5 +31,5 @@ uvicorn main:app --reload --host 0.0.0.0 --port 3000
 ```
 ### acceso a fastapi
 ```
-localhost:8000/doc
+http://localhost:3000/docs#/
 ```
