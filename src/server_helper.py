@@ -7,8 +7,8 @@ import datetime
 import hashlib
 import os
 import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+
+from email.message import EmailMessage
 from db_helper import *
 from clases import *
 
@@ -171,7 +171,7 @@ def perfil(data : EmailData):
     return returnValue
 
 def validate(data : EmailData):
-    
+
     returnValue = validateUser(data.email)
 
     return returnValue
@@ -184,34 +184,30 @@ def allCountry():
 
 def sendEmail(correo):
 
-    sender_email = "xiangqips@gmail.com"
-    receiver_email = correo
-    password = "Xiangqi2022" 
-    
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Confirmación de la cuenta de usuario"
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    
-    # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
-    html = """\
-    <html>
-        <body>
-            <p><b>Validación de la cuenta de usuario</b>
-                Haz click en el enlace <a href="">Validar Cuenta</a> 
-                para validar tu cuenta de usuario.
-            </p>
-        </body>
-    </html>
-    """
-    
-    contenido = MIMEText(html,"html")
-    
-    message.attach(contenido)
-    
-    context = ssl.create_default_context
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-        )
+    sender_email = 'xiangqips@gmail.com'
+    email_password = 'Xiangqi2022'
+
+    #contacts = ['741278@unizar.es', 'test@example.com']
+
+    msg = EmailMessage()
+    msg['Subject'] = 'Comprobación de cuenta de usuario'
+    msg['From'] = sender_email
+    msg['To'] = correo
+
+    msg.set_content('Comprobación de la cuenta de usuario')
+
+    msg.add_alternative("""\
+        <html>
+            <body>
+                <p><b>Validación de la cuenta de usuario</b>
+                    Haz click en el enlace <a href="www.google.es">Validar Cuenta</a> 
+                    para validar tu cuenta de usuario.
+            <   /p>
+            </body>
+        </html>
+    """, subtype='html')
+
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(sender_email, email_password)
+        smtp.send_message(msg)
