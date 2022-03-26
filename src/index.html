@@ -1,0 +1,81 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+</head>
+
+<body>
+    <button onClick="sendLogin()">login</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+        const socket = io("http://localhost:8080");
+
+        socket.on("returnLogin", function(data) {
+            console.log(data['exist'], data['ok']);
+        });
+
+        function sendLogin() {
+            socket.emit("login", {
+                'email': '2@gmail',
+                'pwd': '12'
+            })
+            console.log("login");
+        }
+    </script>
+    <button onClick="sendRegister()">register</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+        socket.on("returnRegister", function(data) {
+            console.log(data);
+        });
+
+        function sendRegister() {
+            socket.emit("register", {
+                'email': '1@gmail',
+                'pwd': '1',
+                'nickname': 'a1',
+                'name': 'alex1',
+                'date': '2022-03-16',
+                'image': 'alex1',
+                'country': 'CHN'
+            })
+            console.log("register");
+        }
+    </script>
+    <button onClick="sendProfile()">profile</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+        socket.on("returnProfile", function(data) {
+            console.log(data['exist']);
+            if (data['exist']) {
+                console.log(data['perfil']['birthDate'], data['perfil']['registerDate']);
+                for (i = 0; i < data['partidas'].length; i++) {
+                    console.log(data['partidas'][i]['oponente'], data['partidas'][i]['tocaMover'])
+                }
+                console.log(data['estadisticas']['totalJugadas'], data['estadisticas']['totalGanadas']);
+                console.log(data['estadisticas']['ultimasJugadas'], data['estadisticas']['ultimasGanadas']);
+                for (i = 0; i < data['estadisticas']['dia'].length; i++) {
+                    console.log(data['estadisticas']['dia'][i]);
+                }
+
+            }
+        });
+
+        function sendProfile() {
+            socket.emit("profile", {
+                'email': '1@gmail',
+            })
+            console.log("profile");
+        }
+    </script>
+</body>
+
+</html>
