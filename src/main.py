@@ -63,8 +63,7 @@ def do_profile(data: EmailData):
 def do_validate(data: EmailData):
     #insertar en db imagen como blob?
     
-    #validate(data)
-    sendEmail(data.email)
+    validate(data)
     #respuesta del back al front
     return True
 
