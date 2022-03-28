@@ -1,13 +1,27 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from server_helper import *
 from clases import *
-from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-PATH = "profiles/"
+def verify_token(request: Request):
+    if 'x-access-token' not in request.headers: #busca la cabecera x-access-token en el request
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token"
+        )
+    token = request.headers['x-access-token']
+    try:
+        data = jwt.decode(token, SECRET_KEY, algorithms="HS256")
+        #current_user = crud.get_user_by_uuid(db, data['public_id']) #obtener el usuario de la DB y devolverlo
+        return data['id']
+    except:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized"
+        )   
 
 # Esto es porque el back corre en una URL distinta que el front en las pruebas y 
 # el navegador se queja sino de que las urls no corresponden
@@ -54,8 +68,8 @@ def do_login(data: LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.get("/do-profile/{email}")
-async def do_profile(email: str):
+@app.get("/get-profile/{email}")
+def do_profile(email: str):
     #insertar en db imagen como blob?
     
     returnValue = perfil(email)
@@ -86,7 +100,7 @@ def do_changePwd(data : LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.get("/do-country")
+@app.get("/get-country")
 def do_country():
     #insertar en db imagen como blob?
     
@@ -94,12 +108,14 @@ def do_country():
     #respuesta del back al front
     return returnValue
 
-@app.get("/get-profileImage/{email}")
-async def profileImage(email: str):
+@app.get("/get-profileImage/")
+def profileImage(id: int = Depends(verify_token)):
     #insertar en db imagen como blob?
     
-    file_path = os.path.join(PATH, email+".png")
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-    return {"error": "file not found"}
+    exito, image = getUserImage(id)
+
+    if exito:
+        return image
+    else:
+        return {"error": "image not found"}
 

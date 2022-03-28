@@ -4,6 +4,7 @@
 #
 #--------------------------------------------------------------------------
 import datetime
+from email.message import EmailMessage
 import hashlib
 import os
 import smtplib, ssl
@@ -13,11 +14,12 @@ from db_helper import *
 from clases import *
 import base64
 from fastapi.responses import FileResponse
+import jwt
 import json
 import random
 
 PATH = "profiles/"
-
+SECRET_KEY = "dvk-.klzdzgf6ff<1_:s"
 
 #------------------
 #Usuarios: 0:correo, 1:pwd, 2:salt, 3:validacion, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro, 12: cuentaValida
@@ -94,7 +96,7 @@ def userGames(correo):
             'gana': gana
         }
         returnValue.append(gameData)
-    return image
+    return returnValue
 
 def profileStatistics(correo):
     userGames = getUserGame(correo)
@@ -142,8 +144,13 @@ def loginUser(data : LoginData):
     if exist: #si existe el usuario
         returnValue['ok'] = checkPwd(data.pwd, user[Usuarios.salt], user[Usuarios.pwd])
         print(user[Usuarios.validacion])
-        if user[Usuarios.validacion] :
+        if user[Usuarios.validacion] : #usuario validado
             returnValue['validacion'] = True
+
+            #crear token de acceso
+            token = jwt.encode({'id': user[Usuarios.id], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY, algorithm="HS256")  
+            returnValue['token'] = token
+
         else:
             returnValue['validacion'] = False
     return returnValue
@@ -155,11 +162,6 @@ def registerUser(data : User):
     returnValue = False
     if not exist: #si no existe el usuario
         print("No existe")
-        #Guardar foto
-        with open("" + str(data.email) + ".png", "wb") as f:
-        #with open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".png", 'wb') as f:
-            f.write(base64.urlsafe_b64encode(data.image))
-        f.close()
         #Crear contraseña hasheada
         salt = os.urandom(32).hex()
         hash = hashlib.sha512()
@@ -168,7 +170,14 @@ def registerUser(data : User):
 
         user = [data.email, password_hash, salt, False, data.nickname, data.name, (data.date).date(), data.country.name, None, None, 0, 0, str(datetime.date.today())]
         returnValue = insertUser(user)
-        sendEmail(data.email)
+        if returnValue:
+            sendEmail(data.email)
+            #Guardar foto
+            _, user = getUser(data.email)
+            with open(PATH + str(user[Usuarios.id]) + ".png", "wb") as f:
+            #with open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".png", 'wb') as f:
+                f.write(base64.urlsafe_b64encode(data.image))
+            f.close()
     return returnValue
 
 def perfil(correo : str):
@@ -176,18 +185,12 @@ def perfil(correo : str):
     exist, _ = getUser(correo)
 
     returnValue = { 'exist': exist } 
-    file_path = os.path.join(PATH, correo+".png")
-    if os.path.exists(file_path):
-        image = FileResponse(file_path)
-    else:
-        file_path = os.path.join(PATH, "img_placeholder.svg")
-        image = FileResponse(file_path)
-        if exist: #si existe el usuario
-            returnValue['perfil'] = userProfile(correo)
-            returnValue['partidas'] = userGames(correo)
-            returnValue['estadisticas'] = profileStatistics(correo)
+    if exist: #si existe el usuario
+        returnValue['perfil'] = userProfile(correo)
+        returnValue['partidas'] = userGames(correo)
+        returnValue['estadisticas'] = profileStatistics(correo)
 
-    return {"ok": False, "hola": "hola", "imagen": image}
+    return returnValue
 
 def validate(data : EmailData):
     
@@ -251,37 +254,38 @@ def forgotPwd(correo):
     return exist
 
 def sendEmail(correo):
-    print("Enviamos correo")
-    sender_email = "xiangqips@gmail.com"
-    receiver_email = correo
-    password = "Xiangqi2022" 
     
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Confirmación de la cuenta de usuario"
-    message["From"] = sender_email
-    message["To"] = receiver_email
+    sender_email = 'xiangqips@gmail.com'
+    email_password = 'Xiangqi2022'
+
+    #contacts = ['741278@unizar.es', 'test@example.com']
+
+    msg = EmailMessage()
+    msg['Subject'] = 'Comprobación de cuenta de usuario'
+    msg['From'] = sender_email
+    msg['To'] = correo
+
+    msg.set_content('Comprobación de la cuenta de usuario')
+
+    msg.add_alternative("""\
+        <html>
+            <body>
+                <p><b>Validación de la cuenta de usuario</b>
+                    Haz click en el enlace <a href="www.google.es">Validar Cuenta</a> 
+                    para validar tu cuenta de usuario.
+                </p>
+            </body>
+        </html>
+    """, subtype='html')
+
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(sender_email, email_password)
+        smtp.send_message(msg)
+
+def getUserImage(id):
+    file_path = os.path.join(PATH, str(id)+".png")
+    if os.path.exists(file_path):
+        return True, FileResponse(file_path)
+    return False, NULL
     
-    # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
-    html = """\
-    <html>
-        <body>
-            <p><b>Validación de la cuenta de usuario</b>
-                Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
-                para validar tu cuenta de usuario.
-            </p>
-        </body>
-    </html>
-    """
-    
-    contenido = MIMEText(html,"html")
-    
-    message.attach(contenido)
-    
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        print("MAIL GUAY")
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-            
-        )

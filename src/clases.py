@@ -6,19 +6,20 @@ from pydantic import BaseModel
 import datetime
 
 class Usuarios(IntEnum):
-    correo = 0
-    pwd = 1 
-    salt = 2 
-    validacion = 3 
-    nick = 4 
-    name = 5 
-    birthDate = 6 
-    pais = 7 
-    fichaSkin = 8
-    tableroSkin = 9 
-    rango = 10 
-    puntos = 11 
-    fechaRegistro = 12
+    id = 0
+    correo = 1
+    pwd = 2
+    salt = 3 
+    validacion = 4 
+    nick = 5
+    name = 6 
+    birthDate = 7 
+    pais = 8
+    fichaSkin = 9
+    tableroSkin = 10 
+    rango = 11
+    puntos = 12 
+    fechaRegistro = 13
 
 class Partidas(IntEnum):
     id = 0

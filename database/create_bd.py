@@ -26,7 +26,8 @@ TABLES['Skins'] = (
 
 TABLES['Usuarios'] = (
     "CREATE TABLE Usuarios ("
-    "  correo VARCHAR(100) NOT NULL,"
+    "  id INT NOT NULL AUTO_INCREMENT,"
+    "  correo VARCHAR(100) NOT NULL UNIQUE,"
     "  pwd TINYTEXT NOT NULL,"
     "  salt TINYTEXT NOT NULL,"
     "  validacion BOOLEAN,"
@@ -39,7 +40,7 @@ TABLES['Usuarios'] = (
     "  rango INT,"
     "  puntos INT,"
     "  fechaRegistro VARCHAR(20),"
-    "  PRIMARY KEY (correo),"
+    "  PRIMARY KEY (id),"
     "  FOREIGN KEY (pais) REFERENCES Country(name)"
     "  ON DELETE SET NULL,"
     "  FOREIGN KEY (fichaSkin) REFERENCES Skins(skinId)"
@@ -50,19 +51,19 @@ TABLES['Usuarios'] = (
 
 TABLES['Amigos'] = (
     "CREATE TABLE Amigos ("
-    "  usuario1 VARCHAR(100) NOT NULL,"
-    "  usuario2 VARCHAR(100) NOT NULL,"
-    "  FOREIGN KEY (usuario1) REFERENCES Usuarios(correo)"
+    "  usuario1 INT NOT NULL,"
+    "  usuario2 INT NOT NULL,"
+    "  FOREIGN KEY (usuario1) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (usuario2) REFERENCES Usuarios(correo)"
+    "  FOREIGN KEY (usuario2) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE"
     ");")
 
 TABLES['Tiene'] = (
     "CREATE TABLE Tiene ("
     "  skinId INT NOT NULL,"
-    "  usuario VARCHAR(100) NOT NULL,"
-    "  FOREIGN KEY (usuario) REFERENCES Usuarios(correo)"
+    "  usuario INT NOT NULL,"
+    "  FOREIGN KEY (usuario) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE,"
     "  FOREIGN KEY (skinId) REFERENCES Skins(skinId)"
     "  ON DELETE CASCADE ON UPDATE CASCADE"
@@ -71,26 +72,26 @@ TABLES['Tiene'] = (
 TABLES['Partidas'] = (
     "CREATE TABLE Partidas ("
     "  id INT NOT NULL AUTO_INCREMENT,"
-    "  roja VARCHAR(100) NOT NULL,"
-    "  negra VARCHAR(100) NOT NULL,"
+    "  roja INT NOT NULL,"
+    "  negra INT NOT NULL,"
     "  estado INT NOT NULL," #0 en curso, 1 gana rojo, 2 gana negra, 3 empate 
     "  movimientos LONGTEXT," 
     "  fechaInicio VARCHAR(100),"
     "  lastMove VARCHAR(100),"
     "  PRIMARY KEY (id),"
-    "  FOREIGN KEY (roja) REFERENCES Usuarios(correo)"
+    "  FOREIGN KEY (roja) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (negra) REFERENCES Usuarios(correo)"
+    "  FOREIGN KEY (negra) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE"
     ");")
 
 TABLES['Solicitudes'] = (
     "CREATE TABLE Solicitudes ("
-    "  remitente VARCHAR(100) NOT NULL,"
-    "  destinatario VARCHAR(100) NOT NULL,"
-    "  FOREIGN KEY (remitente) REFERENCES Usuarios(correo)"
+    "  remitente INT NOT NULL,"
+    "  destinatario INT NOT NULL,"
+    "  FOREIGN KEY (remitente) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (destinatario) REFERENCES Usuarios(correo)"
+    "  FOREIGN KEY (destinatario) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE"
     ");")
 
