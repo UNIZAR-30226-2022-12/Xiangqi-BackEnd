@@ -67,6 +67,14 @@ def do_validate(data: EmailData):
     #respuesta del back al front
     return True
 
+@app.post("/do-forgotPwd")
+def do_forgotPwd(data: EmailData):
+    #insertar en db imagen como blob?
+    
+    exist = forgotPwd(data.email)
+    #respuesta del back al front
+    return exist
+
 @app.post("/do-country")
 def do_country():
     #insertar en db imagen como blob?

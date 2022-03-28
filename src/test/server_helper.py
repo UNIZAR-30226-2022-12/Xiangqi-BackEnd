@@ -7,15 +7,10 @@ import datetime
 import hashlib
 import os
 import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+
+from email.message import EmailMessage
 from db_helper import *
 from clases import *
-import base64
-from base64 import decodebytes, decodestring
-import json
-import random
-
 
 #------------------
 #Usuarios: 0:correo, 1:pwd, 2:salt, 3:validacion, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro, 12: cuentaValida
@@ -42,12 +37,10 @@ def checkPwd(pwd, salt, password):
 
 def userProfile(correo):
     _, user = getUser(correo)
-    #with open("" + str(user[Usuarios.correo]) + ".png", "rb") as image_file:
-    with open("/home/ubuntu/pythonSRVR/profiles/" + str(user[Usuarios.correo]) + ".png", "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
-
+    #foto = open("/home/ubuntu/pythonSRVR/profiles/" + str(user[Usuarios.correo]) + ".jpg", 'r')
+    foto = open("" + str(user[Usuarios.correo]) + ".jpg", 'r')
     returnValue = { #obtener informacion del usuario
-        'foto':  encoded_string,
+        'foto': foto.read(),
         'correo': user[Usuarios.correo],
         'nick': user[Usuarios.nick],
         'name': user[Usuarios.name],
@@ -78,12 +71,10 @@ def userGames(correo):
             tocaMover = turnoRoja(game[Partidas.movimientos])
             if game[Partidas.estado] == 1: #gana roja
                 gana = True
-        #with open("" + str(oponente[Usuarios.correo]) + ".png", "rb") as image_file:
-        with open("/home/ubuntu/pythonSRVR/profiles/" + str(oponente[Usuarios.correo]) + ".png", "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read())
-        
+        #foto = open("/home/ubuntu/pythonSRVR/profiles/" + str(oponente[0]) + ".jpg", 'r')
+        foto = open("" + str(oponente[Usuarios.correo]) + ".jpg", 'r')
         gameData = {
-            'foto': encoded_string,
+            'foto': foto.read(),
             'oponente': oponente[Usuarios.nick],
             'fechaInicio': game[Partidas.fechaInicio],
             'lastMove': game[Partidas.lastMove],
@@ -138,7 +129,6 @@ def loginUser(data : LoginData):
     returnValue = { 'exist': exist, 'ok': False, 'validacion': False}
     if exist: #si existe el usuario
         returnValue['ok'] = checkPwd(data.pwd, user[Usuarios.salt], user[Usuarios.pwd])
-        print(user[Usuarios.validacion])
         if user[Usuarios.validacion] :
             returnValue['validacion'] = True
         else:
@@ -151,11 +141,11 @@ def registerUser(data : User):
 
     returnValue = False
     if not exist: #si no existe el usuario
-        print("No existe")
         #Guardar foto
-        #with open("" + str(data.email) + ".png", "rb") as image_file:
-        with open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".png", 'wb') as f:
-            f.write(base64.urlsafe_b64decode(data.image))
+        #f = open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".jpg", 'wb')
+        #f.write(data['image'])
+        f = open("" + str(data.email) + ".jpg", 'wb')
+        f.write(data.email.encode())
         f.close()
         #Crear contraseña hasheada
         salt = os.urandom(32).hex()
@@ -165,7 +155,9 @@ def registerUser(data : User):
 
         user = [data.email, password_hash, salt, False, data.nickname, data.name, (data.date).date(), data.country.name, None, None, 0, 0, str(datetime.date.today())]
         returnValue = insertUser(user)
-        sendEmail(data.email)
+        if returnValue:
+            sendEmail(data.email)
+
     return returnValue
 
 def perfil(data : EmailData):
@@ -181,7 +173,7 @@ def perfil(data : EmailData):
     return returnValue
 
 def validate(data : EmailData):
-    
+
     returnValue = validateUser(data.email)
 
     return returnValue
@@ -192,77 +184,32 @@ def allCountry():
 
     return returnValue
 
-def forgotPwd(correo):
-    exist, _ = getUser(correo)
-    if exist:
-        print("Enviamos correo")
-        sender_email = "xiangqips@gmail.com"
-        receiver_email = correo
-        password = "Xiangqi2022" 
-        
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "Confirmación de la cuenta de usuario"
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        
-        # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
-        html = """\
+def sendEmail(correo):
+
+    sender_email = 'xiangqips@gmail.com'
+    email_password = 'Xiangqi2022'
+
+    #contacts = ['741278@unizar.es', 'test@example.com']
+
+    msg = EmailMessage()
+    msg['Subject'] = 'Comprobación de cuenta de usuario'
+    msg['From'] = sender_email
+    msg['To'] = correo
+
+    msg.set_content('Comprobación de la cuenta de usuario')
+
+    msg.add_alternative("""\
         <html>
             <body>
-                <p><b>Recuperacion de la contraseña</b>
-                    Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Recuperar contraseña</a> 
+                <p><b>Validación de la cuenta de usuario</b>
+                    Haz click en el enlace <a href="www.google.es">Validar Cuenta</a> 
+                    para validar tu cuenta de usuario.
                 </p>
             </body>
         </html>
-        """
+    """, subtype='html')
 
-    
-        contenido = MIMEText(html,"html")
-        
-        message.attach(contenido)
-        
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(sender_email, password)
-            print("MAIL GUAY")
-            server.sendmail(
-                sender_email, receiver_email, message.as_string()
-                
-            )
-    return exist
 
-def sendEmail(correo):
-    print("Enviamos correo")
-    sender_email = "xiangqips@gmail.com"
-    receiver_email = correo
-    password = "Xiangqi2022" 
-    
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Confirmación de la cuenta de usuario"
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    
-    # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
-    html = """\
-    <html>
-        <body>
-            <p><b>Validación de la cuenta de usuario</b>
-                Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
-                para validar tu cuenta de usuario.
-            </p>
-        </body>
-    </html>
-    """
-    
-    contenido = MIMEText(html,"html")
-    
-    message.attach(contenido)
-    
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        print("MAIL GUAY")
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-            
-        )
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(sender_email, email_password)
+        smtp.send_message(msg)
