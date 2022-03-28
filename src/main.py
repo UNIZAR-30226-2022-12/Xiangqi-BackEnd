@@ -3,8 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from server_helper import *
 from clases import *
+from fastapi.responses import FileResponse
 
 app = FastAPI()
+
+PATH = "profiles/"
 
 # Esto es porque el back corre en una URL distinta que el front en las pruebas y 
 # el navegador se queja sino de que las urls no corresponden
@@ -51,11 +54,11 @@ def do_login(data: LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.post("/do-profile")
-def do_profile(data: EmailData):
+@app.get("/do-profile/{email}")
+async def do_profile(email: str):
     #insertar en db imagen como blob?
     
-    returnValue = perfil(data)
+    returnValue = perfil(email)
     #respuesta del back al front
     return returnValue
 
@@ -83,11 +86,20 @@ def do_changePwd(data : LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.post("/do-country")
+@app.get("/do-country")
 def do_country():
     #insertar en db imagen como blob?
     
     returnValue = allCountry()
     #respuesta del back al front
     return returnValue
+
+@app.get("/get-profileImage/{email}")
+async def profileImage(email: str):
+    #insertar en db imagen como blob?
+    
+    file_path = os.path.join(PATH, email+".png")
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return {"error": "file not found"}
 

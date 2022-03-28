@@ -12,17 +12,16 @@ from email.mime.multipart import MIMEMultipart
 from db_helper import *
 from clases import *
 import base64
-from base64 import decodebytes, decodestring
+from fastapi.responses import FileResponse
 import json
 import random
+
+PATH = "profiles/"
 
 
 #------------------
 #Usuarios: 0:correo, 1:pwd, 2:salt, 3:validacion, 3:nick, 4:name, 5:birthDate, 6:pais, 7:fichaSkin, 8:tableroSkin, 8:rango, 10:puntos, 11:fechaRegistro, 12: cuentaValida
 #Partidas: 0:id, 1:roja, 2:negra, 3:estado, 4:movimientos, 5:fechaInicio, 6:lastMove
-
-
-
 #------------------
 
 def turnoRoja(move):
@@ -42,12 +41,14 @@ def checkPwd(pwd, salt, password):
 
 def userProfile(correo):
     _, user = getUser(correo)
-    #with open("" + str(user[Usuarios.correo]) + ".png", "rb") as image_file:
-    with open("/home/ubuntu/pythonSRVR/profiles/" + str(user[Usuarios.correo]) + ".png", "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
-
+    file_path = os.path.join(PATH, correo+".png")
+    if os.path.exists(file_path):
+        image = FileResponse(file_path)
+    else:
+        file_path = os.path.join(PATH, "img_placeholder.svg")
+        image = FileResponse(file_path)
     returnValue = { #obtener informacion del usuario
-        'foto':  encoded_string,
+        'foto':  image,
         'correo': user[Usuarios.correo],
         'nick': user[Usuarios.nick],
         'name': user[Usuarios.name],
@@ -78,12 +79,14 @@ def userGames(correo):
             tocaMover = turnoRoja(game[Partidas.movimientos])
             if game[Partidas.estado] == 1: #gana roja
                 gana = True
-        #with open("" + str(oponente[Usuarios.correo]) + ".png", "rb") as image_file:
-        with open("/home/ubuntu/pythonSRVR/profiles/" + str(oponente[Usuarios.correo]) + ".png", "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read())
-        
+        file_path = os.path.join(PATH, oponente[Usuarios.correo]+".png")
+        if os.path.exists(file_path):
+            image = FileResponse(file_path)
+        else:
+            file_path = os.path.join(PATH, "img_placeholder.svg")
+            image = FileResponse(file_path)
         gameData = {
-            'foto': encoded_string,
+            'foto': image,
             'oponente': oponente[Usuarios.nick],
             'fechaInicio': game[Partidas.fechaInicio],
             'lastMove': game[Partidas.lastMove],
@@ -91,7 +94,7 @@ def userGames(correo):
             'gana': gana
         }
         returnValue.append(gameData)
-    return returnValue
+    return image
 
 def profileStatistics(correo):
     userGames = getUserGame(correo)
@@ -153,9 +156,9 @@ def registerUser(data : User):
     if not exist: #si no existe el usuario
         print("No existe")
         #Guardar foto
-        #with open("" + str(data.email) + ".png", "rb") as image_file:
-        with open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".png", 'wb') as f:
-            f.write(base64.urlsafe_b64decode(data.image))
+        with open("" + str(data.email) + ".png", "wb") as f:
+        #with open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".png", 'wb') as f:
+            f.write(base64.urlsafe_b64encode(data.image))
         f.close()
         #Crear contraseña hasheada
         salt = os.urandom(32).hex()
@@ -168,17 +171,23 @@ def registerUser(data : User):
         sendEmail(data.email)
     return returnValue
 
-def perfil(data : EmailData):
+def perfil(correo : str):
 
-    exist, _ = getUser(data.email)
+    exist, _ = getUser(correo)
 
     returnValue = { 'exist': exist } 
-    if exist: #si existe el usuario
-        returnValue['perfil'] = userProfile(data.email)
-        returnValue['partidas'] = userGames(data.email)
-        returnValue['estadisticas'] = profileStatistics(data.email)
+    file_path = os.path.join(PATH, correo+".png")
+    if os.path.exists(file_path):
+        image = FileResponse(file_path)
+    else:
+        file_path = os.path.join(PATH, "img_placeholder.svg")
+        image = FileResponse(file_path)
+        if exist: #si existe el usuario
+            returnValue['perfil'] = userProfile(correo)
+            returnValue['partidas'] = userGames(correo)
+            returnValue['estadisticas'] = profileStatistics(correo)
 
-    return returnValue
+    return {"ok": False, "hola": "hola", "imagen": image}
 
 def validate(data : EmailData):
     
