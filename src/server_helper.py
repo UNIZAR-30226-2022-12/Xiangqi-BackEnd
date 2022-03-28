@@ -287,5 +287,5 @@ def getUserImage(id):
     file_path = os.path.join(PATH, str(id)+".png")
     if os.path.exists(file_path):
         return True, FileResponse(file_path)
-    return False, NULL
+    return False, None
     
