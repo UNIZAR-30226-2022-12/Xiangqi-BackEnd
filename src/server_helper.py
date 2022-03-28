@@ -192,6 +192,16 @@ def allCountry():
 
     return returnValue
 
+def changePwd(data : LoginData):
+    exist, _ = getUser(data.email)
+    if exist: #si
+        salt = os.urandom(32).hex()
+        hash = hashlib.sha512()
+        hash.update(('%s%s' % (salt, data.pwd)).encode('utf-8'))
+        password_hash = hash.hexdigest()
+        chageUserPwd(data.email, password_hash, salt)
+    return exist
+
 def forgotPwd(correo):
     exist, _ = getUser(correo)
     if exist:

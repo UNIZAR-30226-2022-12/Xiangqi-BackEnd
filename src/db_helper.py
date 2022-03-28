@@ -21,6 +21,7 @@ getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
 insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, validacion, nick, name, birthDate, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
         "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
 validateUserQuery = "UPDATE Usuarios SET validacion = True WHERE correo = %s"
+changePwdQuery = "UPDATE Usuarios SET pwd = %s, salt = %s WHERE correo = %s"
 
 def getAllUser(): 
     cnx.cmd_refresh(RefreshOption.GRANT)             
@@ -95,6 +96,22 @@ def validateUser(correo):
     except mysql.connector.Error as error:
         exito = False
         print("Failed to validate user into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        return exito
+
+def chageUserPwd(correo, pwd, salt):
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(changePwdQuery, (pwd, salt, correo))
+        exito = True
+
+        cnx.commit()
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to change user password into Laptop table {}".format(error))
     finally:
         cursor.close()
         return exito

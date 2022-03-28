@@ -75,6 +75,14 @@ def do_forgotPwd(data: EmailData):
     #respuesta del back al front
     return exist
 
+@app.post("/do-changePwd")
+def do_changePwd(data : LoginData):
+    #insertar en db imagen como blob?
+    
+    returnValue = changePwd(data)
+    #respuesta del back al front
+    return returnValue
+
 @app.post("/do-country")
 def do_country():
     #insertar en db imagen como blob?
