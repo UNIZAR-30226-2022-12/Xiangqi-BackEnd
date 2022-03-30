@@ -108,11 +108,10 @@ def do_country():
     #respuesta del back al front
     return returnValue
 
-#@app.get("/get-profileImage/{id}")
-#def profileImage(id: int):
-@app.get("/get-profileImage/")
-def profileImage(id: int = Depends(verify_token)):
-    #insertar en db imagen como blob?
+#@app.get("/get-profileImage/")
+#def profileImage(id: int = Depends(verify_token)):
+@app.get("/get-profileImage/{id}")
+def profileImage(id: int, user: int = Depends(verify_token)):
     
     exito, image = getUserImage(id)
 

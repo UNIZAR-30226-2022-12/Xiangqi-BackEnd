@@ -254,34 +254,40 @@ def forgotPwd(correo):
     return exist
 
 def sendEmail(correo):
+    print("Enviamos correo")
+    sender_email = "xiangqips@gmail.com"
+    receiver_email = correo
+    password = "Xiangqi2022" 
     
-    sender_email = 'xiangqips@gmail.com'
-    email_password = 'Xiangqi2022'
-
-    #contacts = ['741278@unizar.es', 'test@example.com']
-
-    msg = EmailMessage()
-    msg['Subject'] = 'Comprobación de cuenta de usuario'
-    msg['From'] = sender_email
-    msg['To'] = correo
-
-    msg.set_content('Comprobación de la cuenta de usuario')
-
-    msg.add_alternative("""\
-        <html>
-            <body>
-                <p><b>Validación de la cuenta de usuario</b>
-                    Haz click en el enlace <a href="www.google.es">Validar Cuenta</a> 
-                    para validar tu cuenta de usuario.
-                </p>
-            </body>
-        </html>
-    """, subtype='html')
-
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(sender_email, email_password)
-        smtp.send_message(msg)
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Confirmación de la cuenta de usuario"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    
+    # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
+    html = """\
+    <html>
+        <body>
+            <p><b>Validación de la cuenta de usuario</b>
+                Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
+                para validar tu cuenta de usuario.
+            </p>
+        </body>
+    </html>
+    """
+    
+    contenido = MIMEText(html,"html")
+    
+    message.attach(contenido)
+    
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(sender_email, password)
+        print("MAIL GUAY")
+        server.sendmail(
+            sender_email, receiver_email, message.as_string()
+            
+        )
 
 def getUserImage(id):
     file_path = os.path.join(PATH, str(id)+".png")

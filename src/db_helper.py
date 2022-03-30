@@ -122,9 +122,11 @@ def getAllCountry():
     cursor.execute(getAllCountryQuery)
 
     countryList = cursor.fetchall()
-    
+    res = list()
+    for country in countryList:
+        res.append({'name': country[0], 'code': country[1]})
     cursor.close()
 
-    return countryList
+    return res
 
 #cnx.close()
