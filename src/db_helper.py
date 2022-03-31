@@ -15,6 +15,7 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
 
 getUserQuery = "SELECT * FROM Usuarios WHERE id = %s"
 getUserEmailQuery = "SELECT * FROM Usuarios WHERE correo = %s"
+getUserFriendsQuery = "SELECT * FROM Amigos WHERE usuario1 = %s OR usuario2 = %s"
 getAllUserQuery = "SELECT * FROM Usuarios"
 getAllCountryQuery = "SELECT name, code FROM Country"
 getCountryQuery = "SELECT * FROM Country WHERE name = %s"
@@ -88,6 +89,18 @@ def getUserGame(id):
     cursor.close()
 
     return game
+
+def getUserFriends(id):
+    cnx.cmd_refresh(RefreshOption.GRANT)
+
+    cursor = cnx.cursor()
+
+    cursor.execute(getUserFriendsQuery, (id, id))
+    friends = cursor.fetchall()
+
+    cursor.close()
+
+    return friends
 
 def insertUser(user):
     cnx.cmd_refresh(RefreshOption.GRANT)

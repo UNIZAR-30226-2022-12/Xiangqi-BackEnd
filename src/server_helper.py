@@ -43,6 +43,7 @@ def checkPwd(pwd, salt, password):
 
 def userProfile(id):
     _, user = getUser(id)
+    friends = getUserFriends(id)
     returnValue = { #obtener informacion del usuario
         'email': user[Usuarios.correo],
         'nickname': user[Usuarios.nick],
@@ -55,7 +56,8 @@ def userProfile(id):
                 },
         'rank': user[Usuarios.rango],
         'points': user[Usuarios.puntos],
-        'registerDate': user[Usuarios.fechaRegistro]
+        'registerDate': user[Usuarios.fechaRegistro],
+        'nFriends': len(friends)
     }
     return returnValue
 
