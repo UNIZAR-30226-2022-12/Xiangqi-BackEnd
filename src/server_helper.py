@@ -41,37 +41,30 @@ def checkPwd(pwd, salt, password):
     else:
         return False
 
-def userProfile(correo):
-    _, user = getUser(correo)
-    file_path = os.path.join(PATH, correo+".png")
-    if os.path.exists(file_path):
-        image = FileResponse(file_path)
-    else:
-        file_path = os.path.join(PATH, "img_placeholder.svg")
-        image = FileResponse(file_path)
+def userProfile(id):
+    _, user = getUser(id)
     returnValue = { #obtener informacion del usuario
-        'foto':  image,
-        'correo': user[Usuarios.correo],
-        'nick': user[Usuarios.nick],
+        'email': user[Usuarios.correo],
+        'nickname': user[Usuarios.nick],
         'name': user[Usuarios.name],
-        'birthDate': user[Usuarios.birthDate],
-        'pais': {
+        'birthDay': user[Usuarios.birthDate],
+        'country': {
                 "name" : user[Usuarios.pais][Pais.name],
                 "code" : user[Usuarios.pais][Pais.code],
-                "bandera" : user[Usuarios.pais][Pais.bandera]
+                "flag" : user[Usuarios.pais][Pais.bandera]
                 },
-        'rango': user[Usuarios.rango],
-        'puntos': user[Usuarios.puntos],
+        'rank': user[Usuarios.rango],
+        'points': user[Usuarios.puntos],
         'registerDate': user[Usuarios.fechaRegistro]
     }
     return returnValue
 
-def userGames(correo):
+def userGames(id):
     returnValue = []
-    userGames = getUserGame(correo)
+    userGames = getUserGame(id)
     for game in userGames: #todas las partidas
         gana = False
-        if game[Partidas.negra] == correo: #soy la negra
+        if game[Partidas.negra] == id: #soy la negra
             _, oponente = getUser(game[Partidas.roja])
             tocaMover = not turnoRoja(game[Partidas.movimientos])
             if game[Partidas.estado] == 2: #gana negra
@@ -81,14 +74,8 @@ def userGames(correo):
             tocaMover = turnoRoja(game[Partidas.movimientos])
             if game[Partidas.estado] == 1: #gana roja
                 gana = True
-        file_path = os.path.join(PATH, oponente[Usuarios.correo]+".png")
-        if os.path.exists(file_path):
-            image = FileResponse(file_path)
-        else:
-            file_path = os.path.join(PATH, "img_placeholder.svg")
-            image = FileResponse(file_path)
         gameData = {
-            'foto': image,
+            'id': oponente[Usuarios.id],
             'oponente': oponente[Usuarios.nick],
             'fechaInicio': game[Partidas.fechaInicio],
             'lastMove': game[Partidas.lastMove],
@@ -98,8 +85,8 @@ def userGames(correo):
         returnValue.append(gameData)
     return returnValue
 
-def profileStatistics(correo):
-    userGames = getUserGame(correo)
+def profileStatistics(id):
+    userGames = getUserGame(id)
     winGames = []
     latestGames = []
     latestWin = []
@@ -113,11 +100,11 @@ def profileStatistics(correo):
         if gameDate > one_week_ago:
             latestGames.append(game)
             latest = True
-        if game[Partidas.roja] == correo and game[Partidas.estado] == 1: #soy roja y gana roja
+        if game[Partidas.roja] == id and game[Partidas.estado] == 1: #soy roja y gana roja
             winGames.append(game)
             if latest:
                 latestWin.append(game)
-        elif game[Partidas.negra] == correo and game[Partidas.estado] == 2: #soy negra y gana negra
+        elif game[Partidas.negra] == id and game[Partidas.estado] == 2: #soy negra y gana negra
             winGames.append(game)
             if latest:
                 latestWin.append(game)
@@ -138,26 +125,28 @@ def profileStatistics(correo):
 
 def loginUser(data : LoginData):
     
-    exist, user = getUser(data.email)
+    exist, user = getUserEmail(data.email)
 
     returnValue = { 'exist': exist, 'ok': False, 'validacion': False}
     if exist: #si existe el usuario
         returnValue['ok'] = checkPwd(data.pwd, user[Usuarios.salt], user[Usuarios.pwd])
-        print(user[Usuarios.validacion])
+        #print(user[Usuarios.validacion])
         if user[Usuarios.validacion] : #usuario validado
             returnValue['validacion'] = True
 
             #crear token de acceso
-            token = jwt.encode({'id': user[Usuarios.id], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY, algorithm="HS256")  
-            returnValue['token'] = token
-
+            #print("generando token...")
+            if returnValue['ok']:
+                token = jwt.encode({'id': user[Usuarios.id], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY, algorithm="HS256")  
+                returnValue['token'] = token
+                returnValue['id'] = user[Usuarios.id]
         else:
             returnValue['validacion'] = False
     return returnValue
 
 def registerUser(data : User):
 
-    exist, _ = getUser(data.email)
+    exist, _ = getUserEmail(data.email)
 
     returnValue = False
     if not exist: #si no existe el usuario
@@ -173,22 +162,22 @@ def registerUser(data : User):
         if returnValue:
             sendEmail(data.email)
             #Guardar foto
-            _, user = getUser(data.email)
+            _, user = getUserEmail(data.email)
             with open(PATH + str(user[Usuarios.id]) + ".png", "wb") as f:
-            #with open("/home/ubuntu/pythonSRVR/profiles/" + str(data.email) + ".png", 'wb') as f:
-                f.write(base64.urlsafe_b64encode(data.image))
+                image_64_decode = base64.decodestring(data.image)
+                f.write(image_64_decode)
             f.close()
     return returnValue
 
-def perfil(correo : str):
+def perfil(id : str):
 
-    exist, _ = getUser(correo)
+    exist, _ = getUser(id)
 
     returnValue = { 'exist': exist } 
     if exist: #si existe el usuario
-        returnValue['perfil'] = userProfile(correo)
-        returnValue['partidas'] = userGames(correo)
-        returnValue['estadisticas'] = profileStatistics(correo)
+        returnValue['perfil'] = userProfile(id)
+        returnValue['partidas'] = userGames(id)
+        returnValue['estadisticas'] = profileStatistics(id)
 
     return returnValue
 
@@ -198,14 +187,14 @@ def validate(data : EmailData):
 
     return returnValue
 
-def allCountry():
+def getAllCountries():
     
-    returnValue = getAllCountry()
+    returnValue = allCountries()
 
     return returnValue
 
 def changePwd(data : LoginData):
-    exist, _ = getUser(data.email)
+    exist, _ = getUserEmail(data.email)
     if exist: #si
         salt = os.urandom(32).hex()
         hash = hashlib.sha512()
@@ -215,81 +204,78 @@ def changePwd(data : LoginData):
     return exist
 
 def forgotPwd(correo):
-    exist, _ = getUser(correo)
-    if exist:
-        print("Enviamos correo")
-        sender_email = "xiangqips@gmail.com"
-        receiver_email = correo
-        password = "Xiangqi2022" 
-        
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "Confirmación de la cuenta de usuario"
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        
-        # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
-        html = """\
-        <html>
-            <body>
-                <p><b>Recuperacion de la contraseña</b>
-                    Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Recuperar contraseña</a> 
-                </p>
-            </body>
-        </html>
-        """
 
+    exist, _ = getUserEmail(correo)
+    if exist: #si
     
-        contenido = MIMEText(html,"html")
-        
-        message.attach(contenido)
-        
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(sender_email, password)
-            print("MAIL GUAY")
-            server.sendmail(
-                sender_email, receiver_email, message.as_string()
-                
-            )
-    return exist
+        sender_email = 'xiangqips@gmail.com'
+        email_password = 'Xiangqi2022'
+
+        #contacts = ['741278@unizar.es', 'test@example.com']
+
+        msg = EmailMessage()
+        msg['Subject'] = 'Solicitud de cambio de contraseña de la cuenta'
+        msg['From'] = sender_email
+        msg['To'] = correo
+
+        msg.set_content('Solicitud de cambio de contraseña de la cuenta')
+
+        msg.add_alternative("""\
+            <html>
+                <body>
+                    <p><b>Recuperacion de la contraseña</b>
+                        Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Recuperar contraseña</a>
+                    </p>
+                </body>
+            </html>
+        """, subtype='html')
+
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(sender_email, email_password)
+            smtp.send_message(msg)
+        return True
+    else:
+        return False
 
 def sendEmail(correo):
-    print("Enviamos correo")
-    sender_email = "xiangqips@gmail.com"
-    receiver_email = correo
-    password = "Xiangqi2022" 
+
+    exist, _ = getUserEmail(correo)
+    if exist: #si
     
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Confirmación de la cuenta de usuario"
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    
-    # Mensaje que contiene el link a la página de login (falta poner enlace a la página de login)
-    html = """\
-    <html>
-        <body>
-            <p><b>Validación de la cuenta de usuario</b>
-                Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
-                para validar tu cuenta de usuario.
-            </p>
-        </body>
-    </html>
-    """
-    
-    contenido = MIMEText(html,"html")
-    
-    message.attach(contenido)
-    
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        print("MAIL GUAY")
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-            
-        )
+        sender_email = 'xiangqips@gmail.com'
+        email_password = 'Xiangqi2022'
+
+        #contacts = ['741278@unizar.es', 'test@example.com']
+
+        msg = EmailMessage()
+        msg['Subject'] = 'Comprobación de cuenta de usuario'
+        msg['From'] = sender_email
+        msg['To'] = correo
+
+        msg.set_content('Comprobación de la cuenta de usuario')
+
+        msg.add_alternative("""\
+            <html>
+                <body>
+                    <p><b>Validación de la cuenta de usuario</b>
+                        Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
+                        para validar tu cuenta de usuario.
+                    </p>
+                </body>
+            </html>
+        """, subtype='html')
+
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(sender_email, email_password)
+            smtp.send_message(msg)
+        return True
+    else:
+        return False
 
 def getUserImage(id):
+    print(id)
     file_path = os.path.join(PATH, str(id)+".png")
     if os.path.exists(file_path):
         return True, FileResponse(file_path)

@@ -13,7 +13,8 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
                               database='BDpsoft')
 
-getUserQuery = "SELECT * FROM Usuarios WHERE correo = %s"
+getUserQuery = "SELECT * FROM Usuarios WHERE id = %s"
+getUserEmailQuery = "SELECT * FROM Usuarios WHERE correo = %s"
 getAllUserQuery = "SELECT * FROM Usuarios"
 getAllCountryQuery = "SELECT name, code FROM Country"
 getCountryQuery = "SELECT * FROM Country WHERE name = %s"
@@ -34,13 +35,13 @@ def getAllUser():
 
     return userList
 
-def getUser(correo):
+def getUserEmail(correo):
     cnx.cmd_refresh(RefreshOption.GRANT)
     exist = False
 
     cursor = cnx.cursor()
 
-    cursor.execute(getUserQuery, (correo,))
+    cursor.execute(getUserEmailQuery, (correo,))
     user = cursor.fetchone()
 
     if user != None :
@@ -55,12 +56,33 @@ def getUser(correo):
 
     return exist, user
 
-def getUserGame(correo):
+def getUser(id):
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    exist = False
+
+    cursor = cnx.cursor()
+
+    cursor.execute(getUserQuery, (id,))
+    user = cursor.fetchone()
+
+    if user != None :
+        exist = True
+        if user[Usuarios.pais] != None:
+            cursor.execute(getCountryQuery, (user[Usuarios.pais],))
+            pais = cursor.fetchone()
+            user = list(user)
+            user[Usuarios.pais] = pais
+        
+    cursor.close()
+
+    return exist, user
+
+def getUserGame(id):
     cnx.cmd_refresh(RefreshOption.GRANT)
 
     cursor = cnx.cursor()
 
-    cursor.execute(getUserGameQuery, (correo, correo))
+    cursor.execute(getUserGameQuery, (id, id))
     game = cursor.fetchall()
 
     cursor.close()
@@ -116,7 +138,7 @@ def chageUserPwd(correo, pwd, salt):
         cursor.close()
         return exito
 
-def getAllCountry(): 
+def allCountries(): 
     cnx.cmd_refresh(RefreshOption.GRANT)             
     cursor = cnx.cursor()
     cursor.execute(getAllCountryQuery)

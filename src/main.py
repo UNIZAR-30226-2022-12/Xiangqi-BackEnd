@@ -68,11 +68,13 @@ def do_login(data: LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.get("/get-profile/{email}")
-def do_profile(email: str):
+@app.get("/do-getProfile/{id}")
+#def do_getProfile(id: int):
+def do_getProfile(id: int = Depends(verify_token)):
     #insertar en db imagen como blob?
     
-    returnValue = perfil(email)
+    returnValue = perfil(id)
+    print(returnValue)
     #respuesta del back al front
     return returnValue
 
@@ -80,9 +82,9 @@ def do_profile(email: str):
 def do_validate(data: EmailData):
     #insertar en db imagen como blob?
     
-    validate(data)
+    exist = validate(data)
     #respuesta del back al front
-    return True
+    return exist
 
 @app.post("/do-forgotPwd")
 def do_forgotPwd(data: EmailData):
@@ -100,22 +102,20 @@ def do_changePwd(data : LoginData):
     #respuesta del back al front
     return returnValue
 
-@app.get("/get-country")
-def do_country():
-    #insertar en db imagen como blob?
-    
-    returnValue = allCountry()
-    #respuesta del back al front
+@app.get("/do-getCountries")
+def do_getCountries():
+    returnValue = allCountries()
     return returnValue
 
-#@app.get("/get-profileImage/")
-#def profileImage(id: int = Depends(verify_token)):
-@app.get("/get-profileImage/{id}")
-def profileImage(id: int, user: int = Depends(verify_token)):
-    
-    exito, image = getUserImage(id)
 
-    if exito:
+@app.get("/do-getProfileImage/{idDelOtro}/{id}")
+#def do_getProfileImage(idDelOtro: int ,id: int):
+def do_getProfileImage(idDelOtro: int ,id: int = Depends(verify_token)):
+    #print("my id", id)
+    exito, image = getUserImage(idDelOtro)
+
+    #print(exito)
+    if exito: 
         return image
     else:
         return {"error": "image not found"}

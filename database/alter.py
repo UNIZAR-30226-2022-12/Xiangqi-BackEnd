@@ -1,5 +1,4 @@
 import mysql.connector
-import datetime
 
 #datetime.datetime.now()
 
@@ -11,8 +10,17 @@ cursor = cnx.cursor()
 #sql =  ("SELECT * FROM Usuarios")
 
 
-cursor.execute("DELETE FROM Usuarios WHERE id=21")
+cursor.execute("UPDATE Country SET name='United Republic of Tanzania' WHERE name='\"United Republic of Tanzania\"'")
+
+#userList = cursor.fetchall()
 
 cnx.commit()
 
+cursor.execute("SELECT * FROM Country WHERE name='United Republic of Tanzania'")
+
+for user in cursor.fetchall():
+    print(user)
+
+
 cursor.close()
+cnx.close()

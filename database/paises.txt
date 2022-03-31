@@ -35,7 +35,7 @@ Belarus;BY;flag-by
 Belize;BZ;flag-bz
 Canada;CA;flag-ca
 Cocos (Keeling) Islands;CC;flag-cc
-"The Democratic Republic of the Congo";CD;flag-cd
+The Democratic Republic of the Congo;CD;flag-cd
 Central African Republic;CF;flag-cf
 Congo;CG;flag-cg
 Switzerland;CH;flag-ch
@@ -101,7 +101,7 @@ Israel;IL;flag-il
 India;IN;flag-in
 British Indian Ocean Territory;IO;flag-io
 Iraq;IQ;flag-iq
-"Islamic Republic Of Iran";IR;flag-ir
+Islamic Republic Of Iran;IR;flag-ir
 Iceland;IS;flag-is
 Italy;IT;flag-it
 Jamaica;JM;flag-jm
@@ -214,8 +214,8 @@ Tonga;TO;flag-to
 Turkey;TR;flag-tr
 Trinidad and Tobago;TT;flag-tt
 Tuvalu;TV;flag-tv
-"Province of China Taiwan";TW;flag-tw
-"United Republic of Tanzania";TZ;flag-tz
+Province of China Taiwan;TW;flag-tw
+United Republic of Tanzania;TZ;flag-tz
 Ukraine;UA;flag-ua
 Uganda;UG;flag-ug
 United States Minor Outlying Islands;UM;flag-um
