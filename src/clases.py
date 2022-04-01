@@ -33,7 +33,7 @@ class Partidas(IntEnum):
 class Pais(IntEnum):
     name = 0
     code = 1 
-    bandera = 2 
+    flag = 2 
 
 class Country(BaseModel):
     code: str

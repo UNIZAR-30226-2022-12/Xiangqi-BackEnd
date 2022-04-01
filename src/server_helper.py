@@ -52,9 +52,9 @@ def userProfile(id):
         'country': {
                 "name" : user[Usuarios.pais][Pais.name],
                 "code" : user[Usuarios.pais][Pais.code],
-                "flag" : user[Usuarios.pais][Pais.bandera]
+                "flag" : user[Usuarios.pais][Pais.flag]
                 },
-        'rank': user[Usuarios.rango],
+        'range': user[Usuarios.rango],
         'points': user[Usuarios.puntos],
         'registerDate': user[Usuarios.fechaRegistro],
         'nFriends': len(friends)
@@ -78,11 +78,13 @@ def userGames(id):
                 gana = True
         gameData = {
             'id': oponente[Usuarios.id],
-            'oponente': oponente[Usuarios.nick],
-            'fechaInicio': game[Partidas.fechaInicio],
-            'lastMove': game[Partidas.lastMove],
-            'tocaMover': tocaMover,
-            'gana': gana
+            'nickaname': oponente[Usuarios.nick],
+            'flag': oponente[Usuarios.pais][Pais.flag],
+            'country': oponente[Usuarios.pais][Pais.name],
+            'startDate': game[Partidas.fechaInicio],
+            'lastMovDate': game[Partidas.lastMove],
+            'myTurn': tocaMover,
+            #'gana': gana
         }
         returnValue.append(gameData)
     return returnValue

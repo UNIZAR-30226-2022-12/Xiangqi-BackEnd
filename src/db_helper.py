@@ -151,6 +151,19 @@ def chageUserPwd(correo, pwd, salt):
         cursor.close()
         return exito
 
+def getCountry(name): 
+    cnx.cmd_refresh(RefreshOption.GRANT)             
+    cursor = cnx.cursor()
+
+    print(name)
+    cursor.execute(getCountryQuery, (name,))
+
+    country = cursor.fetchone()
+    
+    cursor.close()
+
+    return country
+
 def allCountries(): 
     cnx.cmd_refresh(RefreshOption.GRANT)             
     cursor = cnx.cursor()

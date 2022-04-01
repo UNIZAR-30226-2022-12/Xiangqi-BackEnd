@@ -69,8 +69,8 @@ def do_login(data: LoginData):
     return returnValue
 
 @app.get("/do-getProfile/{id}")
-#def do_getProfile(id: int):
-def do_getProfile(id: int = Depends(verify_token)):
+def do_getProfile(id: int):
+#def do_getProfile(id: int = Depends(verify_token)):
     #insertar en db imagen como blob?
     
     returnValue = perfil(id)
