@@ -9,9 +9,9 @@ from mysql.connector import RefreshOption
 
 from clases import User, Usuarios
 
-cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
-                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
-                              database='BDpsoft')
+#cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+#                             host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+#                             database='BDpsoft')
 
 getUserQuery = "SELECT * FROM Usuarios WHERE id = %s"
 getUserEmailQuery = "SELECT * FROM Usuarios WHERE correo = %s"
@@ -26,6 +26,9 @@ validateUserQuery = "UPDATE Usuarios SET validacion = True WHERE correo = %s"
 changePwdQuery = "UPDATE Usuarios SET pwd = %s, salt = %s WHERE correo = %s"
 
 def getAllUser(): 
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)             
     cursor = cnx.cursor()
     cursor.execute(getAllUserQuery)
@@ -33,10 +36,14 @@ def getAllUser():
     userList = cursor.fetchall()
     
     cursor.close()
+    cnx.close()
 
     return userList
 
 def getUserEmail(correo):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     exist = False
 
@@ -54,10 +61,14 @@ def getUserEmail(correo):
             user[Usuarios.pais] = pais
         
     cursor.close()
+    cnx.close()
 
     return exist, user
 
 def getUser(id):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     exist = False
 
@@ -75,10 +86,14 @@ def getUser(id):
             user[Usuarios.pais] = pais
         
     cursor.close()
+    cnx.close()
 
     return exist, user
 
 def getUserGame(id):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
 
     cursor = cnx.cursor()
@@ -87,10 +102,14 @@ def getUserGame(id):
     game = cursor.fetchall()
 
     cursor.close()
+    cnx.close()
 
     return game
 
 def getUserFriends(id):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
 
     cursor = cnx.cursor()
@@ -99,10 +118,14 @@ def getUserFriends(id):
     friends = cursor.fetchall()
 
     cursor.close()
+    cnx.close()
 
     return friends
 
 def insertUser(user):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     try:
         cursor = cnx.cursor()
@@ -116,10 +139,14 @@ def insertUser(user):
         print("Failed to insert record into Laptop table {}".format(error))
     finally:
         cursor.close()
+        cnx.close()
         print("MySQL connection is closed")
         return exito
         
 def validateUser(correo):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     try:
         cursor = cnx.cursor()
@@ -133,9 +160,13 @@ def validateUser(correo):
         print("Failed to validate user into Laptop table {}".format(error))
     finally:
         cursor.close()
+        cnx.close()
         return exito
 
 def chageUserPwd(correo, pwd, salt):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     try:
         cursor = cnx.cursor()
@@ -149,9 +180,13 @@ def chageUserPwd(correo, pwd, salt):
         print("Failed to change user password into Laptop table {}".format(error))
     finally:
         cursor.close()
+        cnx.close()
         return exito
 
 def getCountry(name): 
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)             
     cursor = cnx.cursor()
 
@@ -161,10 +196,14 @@ def getCountry(name):
     country = cursor.fetchone()
     
     cursor.close()
+    cnx.close()
 
     return country
 
 def allCountries(): 
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)             
     cursor = cnx.cursor()
     cursor.execute(getAllCountryQuery)
@@ -174,6 +213,7 @@ def allCountries():
     for country in countryList:
         res.append({'name': country[0], 'code': country[1]})
     cursor.close()
+    cnx.close()
 
     return res
 
