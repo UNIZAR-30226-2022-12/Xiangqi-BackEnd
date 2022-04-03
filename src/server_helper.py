@@ -207,6 +207,36 @@ def changePwd(data : LoginData):
         chageUserPwd(data.email, password_hash, salt)
     return exist
 
+def editProfile(id : int, data : User):
+    
+    exist, _ = getUser(id)
+
+    returnValue = False
+    if exist: #si no existe el usuario
+        #Crear contraseña hasheada
+        salt = os.urandom(32).hex()
+        hash = hashlib.sha512()
+        hash.update(('%s%s' % (salt, data.pwd)).encode('utf-8'))
+        password_hash = hash.hexdigest()
+
+        data = [password_hash, salt, data.nickname, data.name, (data.date).date(), data.country.name]
+        print(data)
+        returnValue = editUser(id, data)
+        #with open(PATH + str(id) + ".png", "wb") as f:
+        #    image_64_decode = base64.decodestring(data.image)
+        #    f.write(image_64_decode)
+        #f.close()
+    return returnValue
+
+def deleteAccount(id : int):
+    
+    exist, _ = getUser(id)
+
+    returnValue = False
+    if exist: #si no existe el usuario
+        returnValue = deleteUser(id)
+    return returnValue
+
 def forgotPwd(correo):
 
     exist, _ = getUserEmail(correo)

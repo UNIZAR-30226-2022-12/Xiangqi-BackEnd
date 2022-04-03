@@ -24,6 +24,10 @@ insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, validacion, nick, 
         "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
 validateUserQuery = "UPDATE Usuarios SET validacion = True WHERE correo = %s"
 changePwdQuery = "UPDATE Usuarios SET pwd = %s, salt = %s WHERE correo = %s"
+editUserQuery = "UPDATE Usuarios SET pwd = %s, salt = %s, nick = %s, name = %s, birthDate = %s, pais = %s WHERE id = %s"
+deleteUserQuery = "DELETE FROM Usuarios WHERE id = %s"
+
+
 
 def getAllUser(): 
     cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
@@ -142,7 +146,49 @@ def insertUser(user):
         cnx.close()
         print("MySQL connection is closed")
         return exito
+
+def editUser(id, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    try:
+        cursor = cnx.cursor()
+        exito = True
+        print(id)
+        cursor.execute(editUserQuery, data+[id])
+        cnx.commit()
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to edit record into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        cnx.close()
+        print("MySQL connection is closed")
+        return exito
         
+def deleteUser(id):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    try:
+        cursor = cnx.cursor()
+        exito = True
+
+        cursor.execute(deleteUserQuery, (id, ))
+        cnx.commit()
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to edit record into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        cnx.close()
+        print("MySQL connection is closed")
+        return exito
+
 def validateUser(correo):
     cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',

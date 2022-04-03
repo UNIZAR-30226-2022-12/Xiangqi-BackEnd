@@ -37,4 +37,9 @@ http://localhost:3000/docs#/
 ```
 pip install aiofiles 
 ```
+### virtual server
+```
+ec2-3-82-235-243.compute-1.amazonawv.com
+```
+
 

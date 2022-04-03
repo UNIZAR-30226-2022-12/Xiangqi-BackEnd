@@ -120,3 +120,19 @@ def do_getProfileImage(idDelOtro: int ,id: int = Depends(verify_token)):
     else:
         return {"error": "image not found"}
 
+@app.post("/do-editProfile")
+#def do_editProfile(user : User, id: int):
+def do_editProfile(user : User, id: int = Depends(verify_token)):
+    #print("my id", id)
+    exito = editProfile(id, user)
+
+    return exito
+
+@app.post("/do-deleteAccount/{id}")
+#def do_deleteAccount(id: int):
+def do_deleteAccount(id: int = Depends(verify_token)):
+    exito = deleteAccount(id)
+
+    return exito
+    
+
