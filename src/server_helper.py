@@ -119,12 +119,18 @@ def profileStatistics(id):
     #    'ultimasJugadas': len(latestGames),
     #    'ultimasGanadas': len(latestWin)
     }
-    #returnValue['dia'] = [0, 0, 0, 0, 0, 0, 0]
-    #for game in latestWin:
-    #    gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
-    #    days = (today - gameDate).days
-    #    if days >= 0 and days < 7:
-    #        returnValue['dia'][days] += 1
+    returnValue['diaGanadas'] = [1, 0, 0, 0, 0, 0, 0]
+    returnValue['diaJugadas'] = [1, 0, 0, 0, 0, 0, 0]
+    for game in latestWin:
+        gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
+        days = (today - gameDate).days
+        if days >= 0 and days < 7:
+            returnValue['diaGanadas'][days] += 1
+    for game in latestGames:
+        gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
+        days = (today - gameDate).days
+        if days >= 0 and days < 7:
+            returnValue['diaJugadas'][days] += 1
     return returnValue
 
 def loginUser(data : LoginData):
