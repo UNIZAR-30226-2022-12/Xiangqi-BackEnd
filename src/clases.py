@@ -48,9 +48,21 @@ class User(BaseModel):
     country: Country
     pwd: str
 
+class UpdateUser(BaseModel):
+    nickname: str
+    name: str
+    image: bytes
+    date: datetime.datetime
+    country: Country
+    pwd: str
+
 class LoginData(BaseModel):
     email: str
     pwd: str
 
 class EmailData(BaseModel):
     email: str
+
+
+class Image(BaseModel):
+    image: bytes

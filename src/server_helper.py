@@ -3,7 +3,7 @@
 #Comunica con db_helper para obtener toda informacion a devolver al cliente
 #
 #--------------------------------------------------------------------------
-import datetime
+from datetime import datetime
 from email.message import EmailMessage
 import hashlib
 import os
@@ -18,7 +18,7 @@ import jwt
 import json
 import random
 
-PATH = "profiles/"
+PATH = "../profiles/"
 SECRET_KEY = "dvk-.klzdzgf6ff<1_:s"
 
 #------------------
@@ -48,7 +48,7 @@ def userProfile(id):
         'email': user[Usuarios.correo],
         'nickname': user[Usuarios.nick],
         'name': user[Usuarios.name],
-        'birthDay': user[Usuarios.birthDate],
+        'birthday': user[Usuarios.birthDate].strftime('%d/%m/%Y'),
         'country': {
                 "name" : user[Usuarios.pais][Pais.name],
                 "code" : user[Usuarios.pais][Pais.code],
@@ -56,7 +56,7 @@ def userProfile(id):
                 },
         'range': user[Usuarios.rango],
         'points': user[Usuarios.puntos],
-        'registerDate': user[Usuarios.fechaRegistro],
+        'registerDate': user[Usuarios.fechaRegistro].strftime('%d/%m/%Y'),
         'nFriends': len(friends)
     }
     return returnValue
@@ -81,8 +81,8 @@ def userGames(id):
             'nickaname': oponente[Usuarios.nick],
             'flag': oponente[Usuarios.pais][Pais.flag],
             'country': oponente[Usuarios.pais][Pais.name],
-            'startDate': game[Partidas.fechaInicio],
-            'lastMovDate': game[Partidas.lastMove],
+            'startDate': game[Partidas.fechaInicio].strftime('%d/%m/%Y'),
+            'lastMovDate': game[Partidas.lastMove].strftime('%d/%m/%Y'),
             'myTurn': tocaMover,
             #'gana': gana
         }
@@ -115,16 +115,16 @@ def profileStatistics(id):
 
     returnValue = { #obtener informacion del usuario
         'totalJugadas': len(userGames),
-        'totalGanadas': len(winGames),
-        'ultimasJugadas': len(latestGames),
-        'ultimasGanadas': len(latestWin)
+        'totalGanadas': len(winGames)
+    #    'ultimasJugadas': len(latestGames),
+    #    'ultimasGanadas': len(latestWin)
     }
-    returnValue['dia'] = [0, 0, 0, 0, 0, 0, 0]
-    for game in latestWin:
-        gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
-        days = (today - gameDate).days
-        if days >= 0 and days < 7:
-            returnValue['dia'][days] += 1
+    #returnValue['dia'] = [0, 0, 0, 0, 0, 0, 0]
+    #for game in latestWin:
+    #    gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
+    #    days = (today - gameDate).days
+    #    if days >= 0 and days < 7:
+    #        returnValue['dia'][days] += 1
     return returnValue
 
 def loginUser(data : LoginData):
@@ -207,25 +207,32 @@ def changePwd(data : LoginData):
         chageUserPwd(data.email, password_hash, salt)
     return exist
 
-def editProfile(id : int, data : User):
+def editProfile(id : int, data, image):
     
-    exist, _ = getUser(id)
+    exist, user = getUser(id)
 
     returnValue = False
     if exist: #si no existe el usuario
         #Crear contraseña hasheada
-        salt = os.urandom(32).hex()
-        hash = hashlib.sha512()
-        hash.update(('%s%s' % (salt, data.pwd)).encode('utf-8'))
-        password_hash = hash.hexdigest()
-
-        data = [password_hash, salt, data.nickname, data.name, (data.date).date(), data.country.name]
-        print(data)
+        if data['pwd'] != 'a':
+            salt = os.urandom(32).hex()
+            hash = hashlib.sha512()
+            hash.update(('%s%s' % (salt, data['pwd'])).encode('utf-8'))
+            password_hash = hash.hexdigest()
+        else:
+            salt = user[Usuarios.salt]
+            password_hash = user[Usuarios.pwd]
+        date = datetime.datetime.strptime(data['date'], '%Y-%m-%d').date()
+        data = [password_hash, salt, data['nickname'], data['name'], date, data['country']]
+        
         returnValue = editUser(id, data)
-        #with open(PATH + str(id) + ".png", "wb") as f:
-        #    image_64_decode = base64.decodestring(data.image)
-        #    f.write(image_64_decode)
-        #f.close()
+
+        imageLength = len(image)
+        if imageLength > 0:
+            with open(PATH + str(id) + ".png", "wb") as f:
+                image_64_decode = base64.decodestring(image)
+                f.write(image_64_decode)
+            f.close()
     return returnValue
 
 def deleteAccount(id : int):

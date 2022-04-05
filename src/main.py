@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Optional
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,69 +38,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}") # http://localhost:8000/items/1?q=kk
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
-
-#El metodo do-create que el AccountService del front tiene que llamar (te mete un usuario)
-#http://localhost:8000/docs/    <- para debuguear puedes hacer peticiones al backend (do-create), execute y ver en el response los detalles de que devuelve
 @app.post("/do-create")
 def do_create(data: User):
-    #insertar en db imagen como blob?
-    
+    #data.date=data.date+timedelta(days=1)
     returnValue = registerUser(data)
-
-    #respuesta del back al front
     return returnValue
 
 @app.post("/do-login")
 def do_login(data: LoginData):
-    #insertar en db imagen como blob?
-    
     returnValue = loginUser(data)
-    
-    #respuesta del back al front
     return returnValue
 
 @app.get("/do-getProfile/{id}")
-def do_getProfile(id: int):
-#def do_getProfile(id: int = Depends(verify_token)):
-    #insertar en db imagen como blob?
-    
+#def do_getProfile(id: int):
+def do_getProfile(id: int, id2: int = Depends(verify_token)):
     returnValue = perfil(id)
-    print(returnValue)
-    #respuesta del back al front
     return returnValue
 
 @app.post("/do-validate")
 def do_validate(data: EmailData):
-    #insertar en db imagen como blob?
-    
     exist = validate(data)
-    #respuesta del back al front
     return exist
 
 @app.post("/do-forgotPwd")
-def do_forgotPwd(data: EmailData):
-    #insertar en db imagen como blob?
-    
+def do_forgotPwd(data: EmailData):   
     exist = forgotPwd(data.email)
-    #respuesta del back al front
     return exist
 
 @app.post("/do-changePwd")
-def do_changePwd(data : LoginData):
-    #insertar en db imagen como blob?
-    
+def do_changePwd(data : LoginData):  
     returnValue = changePwd(data)
-    #respuesta del back al front
     return returnValue
 
 @app.get("/do-getCountries")
@@ -108,31 +76,35 @@ def do_getCountries():
     return returnValue
 
 
-@app.get("/do-getProfileImage/{idDelOtro}/{id}")
-#def do_getProfileImage(idDelOtro: int ,id: int):
-def do_getProfileImage(idDelOtro: int ,id: int = Depends(verify_token)):
-    #print("my id", id)
-    exito, image = getUserImage(idDelOtro)
-
-    #print(exito)
+@app.get("/do-getProfileImage/{id}")
+def do_getProfileImage(idDelOtro: int ,id: int):
+#def do_getProfileImage(id: int, id2: int = Depends(verify_token)):
+    exito, image = getUserImage(id)
     if exito: 
         return image
     else:
         return {"error": "image not found"}
 
-@app.post("/do-editProfile")
-#def do_editProfile(user : User, id: int):
-def do_editProfile(user : User, id: int = Depends(verify_token)):
-    #print("my id", id)
-    exito = editProfile(id, user)
+@app.get("/do-getPartidas/{id}")
+#def do_getPartidas(id: int):
+def do_getPartidas(id: int, id2: int = Depends(verify_token)):
+    pass
 
+@app.post("/do-changeProfile/{nickname}/{name}/{date}/{country}/{pwd}")
+#def do_editProfile(nickname: str, name: str, date: str, country: str, pwd: str, image: Image, id: int):
+def do_changeProfile(nickname: str, name: str, date: str, country: str, pwd: str, image: Image, id: int = Depends(verify_token)):
+    user = {'nickname': nickname, 
+            'name': name, 
+            'date': date, 
+            'country': country, 
+            'pwd': pwd}
+    exito = editProfile(id, user, image.image)
     return exito
 
-@app.post("/do-deleteAccount/{id}")
+@app.get("/do-deleteAccount")
 #def do_deleteAccount(id: int):
 def do_deleteAccount(id: int = Depends(verify_token)):
     exito = deleteAccount(id)
-
     return exito
     
 
