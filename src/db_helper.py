@@ -27,6 +27,13 @@ changePwdQuery = "UPDATE Usuarios SET pwd = %s, salt = %s WHERE correo = %s"
 editUserQuery = "UPDATE Usuarios SET pwd = %s, salt = %s, nick = %s, name = %s, birthDate = %s, pais = %s WHERE id = %s"
 deleteUserQuery = "DELETE FROM Usuarios WHERE id = %s"
 
+#---ranking query
+userGamePlayed = "SELECT us.id, count(*) AS game FROM Usuarios us, Partidas p WHERE us.id = p.roja OR us.id = p.negra GROUP BY us.id"
+userGameWon = "SELECT us.id, count(*) AS game FROM Usuarios us, Partidas p WHERE (us.id = p.roja AND p.estado = 1) OR (us.id = p.negra AND p.estado = 2) GROUP BY us.id"
+userGameStat = "SELECT played.id, played.game AS pg, won.game AS wg FROM (" + userGamePlayed + ") played, (" + userGameWon + ") won WHERE played.id = won.id" 
+rankingQuery = "SELECT us.id, us.nick, us.pais, c.code, c.bandera, us.rango, ug.pg, ug.wg FROM Usuarios us, Country c, (" + userGameStat + ") ug WHERE us.pais = c.name AND us.id = ug.id ORDER BY ug.wg DESC"
+
+
 
 
 def getAllUser(cnx): 
@@ -189,5 +196,19 @@ def allCountries(cnx):
 
     cursor.close()
     return res
+
+def usersRanking(cnx):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(rankingQuery)
+        rankList = cursor.fetchall()
+        print(rankList)
+    except mysql.connector.Error as error:
+        print("Failed to get RankingList into Laptop table {}".format(error))
+    finally:
+        cursor.close()     
+        return rankList 
+    
+    
 
 #

@@ -99,5 +99,11 @@ def do_changeProfile(nickname: str, name: str, date: str, country: str, pwd: str
 def do_deleteAccount(id: int = Depends(verify_token)):
     exito = deleteAccount(id)
     return exito
+
+@app.get("/do-getRanking")
+def do_getRanking(id: int):
+#def do_getRanking(id: int = Depends(verify_token)):
+    ranking = getRanking()
+    return ranking
     
 

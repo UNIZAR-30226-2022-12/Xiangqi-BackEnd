@@ -348,4 +348,13 @@ def getUserImage(id):
     if os.path.exists(file_path):
         return True, FileResponse(file_path)
     return False, None
+
+def getRanking():
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)  
+    ranking = usersRanking(cnx)
+    cnx.close()
+    return ranking
     
