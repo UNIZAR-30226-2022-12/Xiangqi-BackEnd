@@ -44,7 +44,7 @@ class User(BaseModel):
     name: str
     email: str
     image: bytes
-    date: datetime.datetime
+    date: datetime.date
     country: Country
     pwd: str
 

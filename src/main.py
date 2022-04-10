@@ -40,7 +40,6 @@ app.add_middleware(
 
 @app.post("/do-create")
 def do_create(data: User):
-    #data.date=data.date+timedelta(days=1)
     returnValue = registerUser(data)
     return returnValue
 
@@ -50,7 +49,7 @@ def do_login(data: LoginData):
     return returnValue
 
 @app.get("/do-getProfile/{id}")
-#def do_getProfile(id: int):
+#def do_getProfile(id: int, id2: int):
 def do_getProfile(id: int, id2: int = Depends(verify_token)):
     returnValue = perfil(id)
     return returnValue
@@ -72,26 +71,20 @@ def do_changePwd(data : LoginData):
 
 @app.get("/do-getCountries")
 def do_getCountries():
-    returnValue = allCountries()
+    returnValue = getAllCountries()
     return returnValue
 
-
 @app.get("/do-getProfileImage/{id}")
-def do_getProfileImage(idDelOtro: int ,id: int):
-#def do_getProfileImage(id: int, id2: int = Depends(verify_token)):
+#def do_getProfileImage(id: int ,id2: int):
+def do_getProfileImage(id: int, id2: int = Depends(verify_token)):
     exito, image = getUserImage(id)
     if exito: 
         return image
     else:
-        return {"error": "image not found"}
-
-@app.get("/do-getPartidas/{id}")
-#def do_getPartidas(id: int):
-def do_getPartidas(id: int, id2: int = Depends(verify_token)):
-    pass
+        return {"error": False}
 
 @app.post("/do-changeProfile/{nickname}/{name}/{date}/{country}/{pwd}")
-#def do_editProfile(nickname: str, name: str, date: str, country: str, pwd: str, image: Image, id: int):
+#def do_changeProfile(nickname: str, name: str, date: str, country: str, pwd: str, image: Image, id: int):
 def do_changeProfile(nickname: str, name: str, date: str, country: str, pwd: str, image: Image, id: int = Depends(verify_token)):
     user = {'nickname': nickname, 
             'name': name, 
