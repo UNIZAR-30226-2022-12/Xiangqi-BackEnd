@@ -41,11 +41,5 @@ pip install aiofiles
 ```
 ec2-3-82-235-243.compute-1.amazonawv.com
 ```
-### instalar imageio
-...
-
-pip install imageio
-
-...
 
 
