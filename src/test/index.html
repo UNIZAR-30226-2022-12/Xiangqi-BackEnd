@@ -76,6 +76,52 @@
             console.log("profile");
         }
     </script>
+
+    <button onClick="sendStartGame()">startGame</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+        socket.on("returnStartGame", function(data) {
+            console.log("return");
+            console.log(data);
+        });
+
+        function sendStartGame() {
+            socket.emit("startGame", {
+                'email': '1@gmail',
+            })
+            console.log("startGame");
+        }
+    </script>
+
+    <button onClick="connect()">connect</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+
+        function connect() {
+            socket.emit("connection", {
+                'id': 1,
+            })
+            console.log("connect");
+        }
+    </script>
+
+    <button onClick="enviarMensaje()">enviarMensaje</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+        socket.on("receiveMsg", function(data) {
+            console.log("receiveMsg ", data['id'], ": ", data['msg']);
+        });
+
+        function enviarMensaje() {
+            socket.emit("sendMsg", {
+                'id': 1,
+                'msg': 'hola'
+            })
+            console.log("sendMsg");
+        }
+    </script>
 </body>
 
 </html>

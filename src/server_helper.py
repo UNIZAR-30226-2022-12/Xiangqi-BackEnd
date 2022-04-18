@@ -19,6 +19,7 @@ import json
 import random
 import mysql.connector
 from mysql.connector import RefreshOption
+from textwrap import wrap
 
 PATH = "../profiles/"
 SECRET_KEY = "dvk-.klzdzgf6ff<1_:s"
@@ -43,7 +44,14 @@ def checkPwd(pwd, salt, password):
         return True
     else:
         return False
-
+    
+def cargarTablero(movimientos):
+    tablero = TABLERO
+    for mov in wrap(movimientos, 4):
+        tablero[int(mov[2])][int(mov[3])] = tablero[int(mov[0])][int(mov[1])]
+        tablero[int(mov[0])][int(mov[1])] = P.hh
+    return tablero   
+        
 def userProfile(id, cnx):
     _, user = getUser(id, cnx)
     friends = getUserFriends(id, cnx)
@@ -137,6 +145,33 @@ def profileStatistics(id, cnx):
         if days >= 0 and days < 7:
             returnValue['diaJugadas'][days] += 1
     return returnValue
+
+def calcMovepieza(tablero, pieza, f, c):
+    if pieza >= Piezas.pr1 and pieza <= Piezas.pr4:
+        if f >= 5:
+            return [(f-1, c)]
+        else:
+            return [(f-1, c), (f, c-1), (f, c+1)] 
+    elif pieza >= Piezas.pn1 and pieza <= Piezas.pn4:
+        if f <= 4:
+            return [(f+1, c)]
+        else:
+            return [(f+1, c), (f, c-1), (f, c+1)] 
+
+def calcMove(tablero, equipo):
+    move = []
+    f = 0
+    c = 0
+    for fila in tablero:
+        for pieza in fila:
+            if pieza in equipoRojo and equipo == 0:
+                move[abs(pieza)-1] = calcMovepieza(tablero, pieza, f, c)
+            elif pieza in equipoNegro and equipo == 1:
+                move[abs(pieza)-1] = calcMovepieza(tablero, pieza, f, c)
+            c+=1
+        f+=1    
+        
+    
 
 #--------------------------------------------------------------------------------------------------
 #            Peticiones
@@ -357,4 +392,65 @@ def getRanking():
     ranking = usersRanking(cnx)
     cnx.close()
     return ranking
+
+def createGame(id, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    returnValue = insertNewGame(id, cnx)
+    cnx.close()
+    return returnValue
+
+def deleteGame(id, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    returnValue = deleteGameId(id, cnx)
+    cnx.close()
+    return returnValue
+
+def loadGame(id, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    game = getGame(id, cnx)
+    cnx.close()
+    returnValue = {
+                "game": game,
+                "tablero": cargarTablero(game[Partidas.movimientos]),
+                "turnoRoja": turnoRoja(game[Partidas.movimientos])
+                }
+    
+    return returnValue
+
+def searchRandomOpponent(id, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    returnValue = joinRandomGame(id, cnx)
+    cnx.close()
+    
+    return returnValue
+
+def joinGame(id, idPartida, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    returnValue = joinRandomGame(id, idPartida, cnx)
+    cnx.close()
+    return returnValue
+
+def saveMov(id, mov):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    returnValue = guardarMov(id, mov, cnx)
+    cnx.close()
+    return returnValue
     

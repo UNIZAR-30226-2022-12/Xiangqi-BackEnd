@@ -73,8 +73,8 @@ TABLES['Partidas'] = (
     "CREATE TABLE Partidas ("
     "  id INT NOT NULL AUTO_INCREMENT,"
     "  roja INT NOT NULL,"
-    "  negra INT NOT NULL,"
-    "  estado INT NOT NULL," #0 en curso, 1 gana rojo, 2 gana negra, 3 empate 
+    "  negra INT,"
+    "  estado INT NOT NULL," #-1 sin oponente, 0 en curso, 1 gana rojo, 2 gana negra, 3 empate 
     "  movimientos LONGTEXT," 
     "  fechaInicio DATETIME,"
     "  lastMove DATETIME,"

@@ -27,12 +27,21 @@ changePwdQuery = "UPDATE Usuarios SET pwd = %s, salt = %s WHERE correo = %s"
 editUserQuery = "UPDATE Usuarios SET pwd = %s, salt = %s, nick = %s, name = %s, birthDate = %s, pais = %s WHERE id = %s"
 deleteUserQuery = "DELETE FROM Usuarios WHERE id = %s"
 
+insertGameQuery =  ("INSERT INTO Partidas (id, roja, negra, estado, movimientos, fechaInicio, lastMove) "
+        "VALUE (%s, %s, %s, %s, %s, %s, %s);")
+deleteGameIdQuery = "DELETE FROM Partidas WHERE id = %s"
+guardarMovQuery = ("UPDATE Partidas SET movimientos = CONCAT(movimientos, %s) WHERE id = %s")
+getGameQuery = "SELECT * FROM Partidas WHERE id = %s"
+buscarPartidaQuery = "SELECT id FROM Partidas WHERE negra = None"
+unirPartidaQuery = "UPDATE Partidas SET negra = %s WHERE id = %s"
+
 #---ranking query
 userGamePlayed = "SELECT us.id, count(*) AS game FROM Usuarios us, Partidas p WHERE us.id = p.roja OR us.id = p.negra GROUP BY us.id"
 userGameWon = "SELECT us.id, count(*) AS game FROM Usuarios us, Partidas p WHERE (us.id = p.roja AND p.estado = 1) OR (us.id = p.negra AND p.estado = 2) GROUP BY us.id"
 userGameStat = "SELECT played.id, played.game AS pg, won.game AS wg FROM (" + userGamePlayed + ") played, (" + userGameWon + ") won WHERE played.id = won.id" 
 rankingQuery = "SELECT us.id, us.nick, us.pais, c.code, c.bandera, us.rango, ug.pg, ug.wg FROM Usuarios us, Country c, (" + userGameStat + ") ug WHERE us.pais = c.name AND us.id = ug.id ORDER BY ug.wg DESC"
 
+#rankQuery = "SELECT (nick, pais, rango, (SELECT COUNT (*) FROM Partidas, Usuarios WHERE (roja = id) OR (negra = id)), (SELECT COUNT (*) FROM Partidas, Usuarios WHERE (roja = id AND estado = 1) OR (negra = id AND estado = 2)) FROM Usuarios WHERE id = %s"
 
 
 
@@ -209,6 +218,70 @@ def usersRanking(cnx):
         cursor.close()     
         return rankList 
     
-    
 
+def insertNewGame(id, cnx):
+    try:
+        exito = True
+        cursor = cnx.cursor()
+        
+        cursor.execute(insertGameQuery, (id, None, 0, "", None, None))
+        cnx.commit()
+    except mysql.connector.Error as error:
+        print("Failed to get RankingList into Laptop table {}".format(error))
+        exito = False
+    finally:
+        cursor.close()     
+        return exito 
+    
+def deleteGameId(id, cnx):
+    try:
+        exito = True
+        cursor = cnx.cursor()
+        
+        cursor.execute(deleteGameIdQuery, (id,))
+        cnx.commit()
+    except mysql.connector.Error as error:
+        print("Failed todelte game into Laptop table {}".format(error))
+        exito = False
+    finally:
+        cursor.close()     
+        return exito 
+    
+def getGame(id, cnx):
+    try:
+        cursor = cnx.cursor()
+        
+        cursor.execute(getGameQuery, (id,))
+        game = cursor.fetchone()
+    except mysql.connector.Error as error:
+        print("Failed to get game into Laptop table {}".format(error))
+    finally:
+        cursor.close()     
+        return game
+
+def joinRandomGame(id, idPartida, cnx):
+    try:
+        cursor = cnx.cursor()
+        
+        cursor.execute(unirPartidaQuery, (id, idPartida))
+        cnx.commit()
+        
+    except mysql.connector.Error as error:
+        print("Failed to get RankingList into Laptop table {}".format(error))
+        return False
+    finally:
+        cursor.close()     
+        return True
+    
+def guardarMov(id, mov, cnx):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(guardarMovQuery, (mov, id)) 
+        cnx.commit()
+    except mysql.connector.Error as error:
+        print("Failed to save into Laptop table {}".format(error))
+        return False
+    finally:
+        cursor.close()     
+        return True
 #
