@@ -117,6 +117,16 @@ def do_getRanking(id: int):
     ranking = getRanking()
     return ranking
 
+@app.get("/do-getShopSkinList")
+def do_getShopSkinList():
+    skinList = getShopSkinList()
+    return skinList
+    
+@app.get("/do-getUserSkinList/{id}")
+def do_getUserSkinList(id: int):
+    skinList = getUserSkinList(id)
+    return skinList
+
 @app.post("/do-loadGame")
 def do_loadGame(data, id: int):
 #def do_createGame(id: int = Depends(verify_token)):

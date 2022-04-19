@@ -393,6 +393,74 @@ def getRanking():
     cnx.close()
     return ranking
 
+###############################
+#Funciones skins tienda
+###############################    
+
+def getShopSkinsList():
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)  
+    skinsShopList = getAllShopSkins(cnx)
+    cnx.close()
+    return skinsShopList
+
+def buySkin(id,skinId,data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    
+    existSkin, skin = getSelectedShopSkin(skinId, cnx)
+    
+    if existSkin:
+        
+        #existUser, user = getUser(id,cnx)
+        #returnValue = addBoughtSkin(skin, user, cnx)
+        
+    cnx.close()
+    return returnValue
+
+###############################
+#Funciones skins usuario
+###############################
+
+def getUserSkinsList(id):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    userSkinsList = getAllUserSkins(id,cnx)
+    cnx.close()
+    return userSkinsList
+
+# Modificación de la skin de usuario a utilizar para las partidas (provisional)   
+def editUserSkin(id,skinId,data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    
+    exist, skin = getSelectedUserSkin(skinId,id,cnx)
+    
+    if exist:
+        if skin['tipo'] == 0:
+            data['fichaSkin'] = skinId
+            returnValue = changeUserTGSkin(skinId, id, cnx)
+        if skin['tipo'] == 1:
+            data['tableroSkin'] = skinId
+            returbValue = changeUserBoardSkin(skinId, id, cnx)
+        
+    cnx.close()
+    return returnValue
+    
+    
+###############################
+#Funciones partida
+###############################
+
+
 def createGame(id, data):
     cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
