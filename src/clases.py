@@ -174,14 +174,5 @@ class LoginData(BaseModel):
 class EmailData(BaseModel):
     email: str
 
-class SkinShop(BaseModel):
-    image: bytes
-    kindOf: int
-    price: int
-    
-class SkinUser(BaseModel):
-    image: bytes
-    kindOf: int
-
 class Image(BaseModel):
     image: bytes

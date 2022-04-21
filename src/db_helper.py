@@ -52,6 +52,7 @@ rankingQuery = "SELECT us.id, us.nick, us.pais, c.code, c.bandera, us.rango, ug.
 showAllSkinsQuery = "SELECT * FROM Skins"
 selectSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us WHERE s.precio <= us.puntos AND s.skinId = %s"
 addNewUserSkinQuery = "INSERT INTO Tiene (skinId, usuario) VALUE (%s, %s)"
+editUserPointsQuery = "UPDATE Usuario SET puntos = %s WHERE id = %s"
 
 #---user skins queries
 #selectBoardQuery = "SELECT t.skinId FROM Tiene t, Skins s WHERE s.tipo = 1 AND t.skinId = %s"
@@ -258,6 +259,21 @@ def getSelectedShopSkin(skinId, cnx):
     shopSkin = cursor.fetchOne()
     exist = shopSkin != None    
     return exist, skinUser  
+    
+def updateUserPoints(id, newScore, cnx):
+    try:
+        cursor = cnx.cursor()
+        exito = True
+        cursor.execute(editUserPointsQuery,newScore,id)
+        cnx.commit()
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to edit userPoints into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        print("MySQL connection is closed")
+        return exito
 
 def addBoughtSkin(skin, user, cnx):
     try:
@@ -273,8 +289,6 @@ def addBoughtSkin(skin, user, cnx):
         cursor.close()
         print("MySQL connection is closed")
         return exito    
-
-
 
 def getAllUserSkins(id, cnx):
     try:

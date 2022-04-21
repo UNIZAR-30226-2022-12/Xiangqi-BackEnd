@@ -406,18 +406,21 @@ def getShopSkinsList():
     cnx.close()
     return skinsShopList
 
-def buySkin(id,skinId,data):
+def buySkin(id,skinId):
     cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
                               database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     
     existSkin, skin = getSelectedShopSkin(skinId, cnx)
+    returnValue = False
     
     if existSkin:
-        
-        #existUser, user = getUser(id,cnx)
-        #returnValue = addBoughtSkin(skin, user, cnx)
+        _, user = getUser(id, cnx)
+        userPoints = user[Usuario.puntos]
+        skinPrice = skin[Skins.precio]
+        payOK = updateUserPoints(id, (userPoints-skinPrice), cnx)
+        returnValue = addBoughtSkin(user, skin, cnx)    
         
     cnx.close()
     return returnValue
@@ -436,21 +439,23 @@ def getUserSkinsList(id):
     return userSkinsList
 
 # Modificación de la skin de usuario a utilizar para las partidas (provisional)   
-def editUserSkin(id,skinId,data):
+def editUserSkin(id,skinId):
     cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
                               database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     
     exist, skin = getSelectedUserSkin(skinId,id,cnx)
+    returnValue = False
     
     if exist:
-        if skin['tipo'] == 0:
-            data['fichaSkin'] = skinId
+        _, user = getUser(id,cnx)
+        if skin[Skins.tipo] == 0:
+            user[Usuarios.fichaSkin] = skinId
             returnValue = changeUserTGSkin(skinId, id, cnx)
-        if skin['tipo'] == 1:
-            data['tableroSkin'] = skinId
-            returbValue = changeUserBoardSkin(skinId, id, cnx)
+        if skin[Skins.tipo] == 1:
+            user[Usuarios.tableroSkin = skinId
+            returnValue = changeUserBoardSkin(skinId, id, cnx)
         
     cnx.close()
     return returnValue

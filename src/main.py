@@ -121,11 +121,21 @@ def do_getRanking(id: int):
 def do_getShopSkinList():
     skinList = getShopSkinList()
     return skinList
+
+@app.get("/do-buySkin/{id},{skinId}")
+def do_buySkin(id, skinId:int):
+    exito = buySkin(id,skinId)
+    return exito
     
 @app.get("/do-getUserSkinList/{id}")
 def do_getUserSkinList(id: int):
     skinList = getUserSkinList(id)
     return skinList
+
+@app.get("/do-editUserSkin/{id},{skinId}")
+def do_editUserSkin(id, skinId: int):
+    exito = editUserSkin(id,skinId)
+    return exito
 
 @app.post("/do-loadGame")
 def do_loadGame(data, id: int):

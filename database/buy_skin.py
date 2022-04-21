@@ -7,4 +7,6 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               database='BDpsoft')
 cursor = cnx.cursor()
 
-sql = (""
+
+sql = ("")
+value = ("")
