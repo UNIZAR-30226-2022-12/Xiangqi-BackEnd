@@ -7,7 +7,15 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
                               database='BDpsoft')
 cursor = cnx.cursor()
+import mysql.connector
+import datetime
 
+#datetime.datetime.now()
+
+cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+cursor = cnx.cursor()
 
 sql =  ("INSERT INTO Partidas (roja, negra, estado, movimientos, fechaInicio, lastMove) "
         "VALUE (%s, %s, %s, %s, %s, %s);")

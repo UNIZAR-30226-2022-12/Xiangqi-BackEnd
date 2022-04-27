@@ -454,7 +454,7 @@ def editUserSkin(id,skinId):
             user[Usuarios.fichaSkin] = skinId
             returnValue = changeUserTGSkin(skinId, id, cnx)
         if skin[Skins.tipo] == 1:
-            user[Usuarios.tableroSkin = skinId
+            user[Usuarios.tableroSkin] = skinId
             returnValue = changeUserBoardSkin(skinId, id, cnx)
         
     cnx.close()

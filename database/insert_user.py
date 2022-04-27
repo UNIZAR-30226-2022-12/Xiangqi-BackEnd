@@ -15,7 +15,9 @@ value = [
         #("1@gmail", "1", "", True, "a1", "alex1", '2022-01-15', "Andorra", None, None, 1, 10, '2021-03-15'),
         #("2@gmail", "12", "", True, "a2", "alex2", '2022-02-15', "Andorra", None, None, 2, 20, '2022-03-15'),
         #("3@gmail", "123", "", False, "a3", "alex3", '2022-03-15', "Andorra", None, None, 3, 30, '2023-03-15'),
-        ("2@gmail", "1234", "", False, "a1", "aa", '2023-03-26', "Andorra", None, None, 4, 40, '2023-03-26')
+        #("2@gmail", "1234", "", True, "r1", "rubius3", '2022-04-25', "Andorra", None, None, 4, 4000, '2022-04-25'),
+        #("666@gmal", "hell", "", True, "satan", "Lucifer", '1999-12-31', "Andorra", None, None, 5, 6666666, '2022-04-25')
+        ("grefgIsAMotherfucker@gmail", "1234567890", "", True, "---", "XokasTheBest", '1900-01-01', "Andorra", None, None, 5, 9999999, '2022-04-25')
 ]
 #sql =  ("SELECT * FROM Usuarios")
 
