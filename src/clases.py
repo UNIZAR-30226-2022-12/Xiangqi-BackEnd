@@ -144,6 +144,23 @@ class Skins(IntEnum):
 class Tiene(IntEnum):
     skinId = 0
     usuario = 1
+
+class Chat(IntEnum):
+    chatId = 0
+    partidaId = 1
+    jugadorRoja = 2
+    jugadorNegra = 3
+
+class Mensaje(IntEnum):
+    mensajeId = 0
+    chatId = 1
+    autorId = 2
+    nickname = 3
+    timestamp = 4
+    texto = 5
+    
+
+    
     
 
 class Country(BaseModel):

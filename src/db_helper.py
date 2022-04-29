@@ -19,7 +19,6 @@ getUserFriendsQuery = "SELECT * FROM Amigos WHERE usuario1 = %s OR usuario2 = %s
 getAllUserQuery = "SELECT * FROM Usuarios"
 getAllCountryQuery = "SELECT name, code FROM Country"
 getCountryQuery = "SELECT * FROM Country WHERE name = %s"
-getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
 insertUserQuery =  ("INSERT INTO Usuarios (correo, pwd, salt, validacion, nick, name, birthDate, pais, fichaSkin, tableroSkin, rango, puntos, fechaRegistro) "
         "VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);")
 validateUserQuery = "UPDATE Usuarios SET validacion = True WHERE correo = %s"
@@ -51,7 +50,7 @@ rankingQuery = "SELECT us.id, us.nick, us.pais, c.code, c.bandera, us.rango, ug.
 #buyTokenSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us, Tiene t WHERE (" + checkStateSkinQuery + ") AND s.tipo = 0 AND s.precio >= us.puntos"
 showAllSkinsQuery = "SELECT * FROM Skins"
 selectSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us WHERE s.precio <= us.puntos AND s.skinId = %s"
-addNewUserSkinQuery = "INSERT INTO Tiene (skinId, usuario) VALUE (%s, %s)"
+addNewUserSkinQuery = "INSERT INTO Tiene (skinId, usuario) VALUE (%s, %s);"
 editUserPointsQuery = "UPDATE Usuario SET puntos = %s WHERE id = %s"
 
 #---user skins queries
@@ -61,6 +60,19 @@ getUserSkinsQuery = "SELECT * FROM Tiene t WHERE t.usuario = %s"
 selectUserSkinQuery = "SELECT t.skinId FROM Tiene t WHERE t.skinId = %s and t.usuario = %s"
 changeUserBoardSkinQuery = "UPDATE Usuario SET tableroSkin = %s WHERE id = %s"
 changeUserTGSkinQuery = "UPDATE Usuario SET fichaSkin = %s WHERE id = %s"
+
+#---chat queries
+newChatQuery = "INSERT INTO Chat (id, partidaId, jugadorRoja, jugadorNegra)" 
+               "VALUE (%s, %s, %s, %s);"
+newMessageQuery = "INSERT INTO Mensaje (mensajeId, chatId, autorId, nickname, timestamp, texto)"
+                  "VALUE (%s, %s, %s, %s, %s, %s);"   
+loadChatQuery = "SELECT * FROM Mensajes m, Chat c, Partidas p WHERE (m.chatId = c.id) AND (c.partidaId = p.id) ORDER BY m.timestamp ASC"   
+               
+
+#---history queries
+#getUserGameQuery = "SELECT * FROM Partidas WHERE roja = %s OR negra = %s"
+#getHistoryQuery = ""
+#moveListGameQuery = ""
 
 
 
@@ -406,4 +418,34 @@ def guardarMov(id, mov, cnx):
     finally:
         cursor.close()     
         return True
+
+#########################################
+# Funciones relacionadas con el chat
+#########################################
+def crearNuevoChat(id, gameId, redId, blackId, cnx):
+    try:
+        exito = True
+        cursor = cnx.cursor()
+        
+        cursor.execute(newChatQuery,(id, gameId, redId, blackId))
+        cnx.commit()
+    except mysql.connector.Error as error:
+        print("Failed to create new chat message into Laptop table {}".format(error))
+        exito = False
+    finally:
+        cursor.close()     
+        return exito    
+
+def añadirNuevoMensaje(id, gameId, playerId, nick, timestamp, texto, cnx):
+    try:
+        exito = true
+        cursor = cnx.cursor()
+        
+        cursor.execute(sendMessageQuery, (id, gameId, playerId, nick, timestamp, texto))
+    except mysql.connector.Error as error:
+        print("Failed to send a new message into Laptop table {}".format(error))
+        exito = False
+    finally:
+        cursor.close()     
+        return exito
 #
