@@ -2,12 +2,9 @@ from datetime import timedelta
 from typing import Optional
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-import socketio
 from server_helper import *
-from create_json import *
 from clases import *
 
-sio = socketio.Server()
 app = FastAPI()
 
 def verify_token(request: Request):
@@ -40,15 +37,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-mov = {}
-room = {}
-
-@app.post("/do-test")
-def do_test():
-#def do_createGame(id: int = Depends(verify_token)):
-    t = cargarTablero("0020907021229274")
-    return t
 
 @app.post("/do-create")
 def do_create(data: User):
@@ -113,8 +101,8 @@ def do_deleteAccount(id: int = Depends(verify_token)):
     return exito
 
 @app.get("/do-getRanking")
-def do_getRanking(id: int):
 #def do_getRanking(id: int = Depends(verify_token)):
+def do_getRanking():
     ranking = getRanking()
     return ranking
 
@@ -123,101 +111,25 @@ def do_getShopSkinList():
     skinList = getShopSkinList()
     return skinList
 
-@app.get("/do-buySkin/{id},{skinId}")
-def do_buySkin(id, skinId:int):
+@app.post("/do-buySkin/{skinId}/{id}")
+#def do_buySkin(skinId: int, id: int):
+def do_buySkin(skinId: int, id: int = Depends(verify_token)):
     exito = buySkin(id,skinId)
     return exito
     
-@app.get("/do-getUserSkinList/{id}")
-def do_getUserSkinList(id: int):
+@app.get("/do-getUserSkinList")
+def do_getUserSkinList(id: int = Depends(verify_token)):
     skinList = getUserSkinList(id)
     return skinList
 
-@app.get("/do-editUserSkin/{id},{skinId}")
-def do_editUserSkin(id, skinId: int):
+@app.post("/do-editUserSkin/{skinId}/{id}")
+def do_editUserSkin(skinId: int, id: int = Depends(verify_token)):
     exito = editUserSkin(id,skinId)
     return exito
-
+    
 @app.post("/do-loadGame")
 def do_loadGame(data, id: int):
 #def do_createGame(id: int = Depends(verify_token)):
     returnValue = loadGame(id, data)
     return returnValue
-
-@app.post("/do-searchRandomOpponent")
-def do_searchRandomOpponent(data, id: int):
-#def do_createGame(id: int = Depends(verify_token)):
-    #idPartida, id = searchRandomOpponent(id, data)
-    if len(room) > 0:
-        #emit
-        idOpponent = next(iter(room))
-        idSala = room[idOpponent]
-        del(room[idOpponent])
-        exito, id = joinGame(id, idSala, data)
-        if exito:
-            return {'exito': True, 'idPartida': id, 'idOpponent': idOpponent}
-    return {'exito': False}
-
-@sio.on('connection')
-async def connect(sid, data):
-    print("connect room ", data['id'])
-    
-    sio.enter_room(sid, data['id'])
-    
-    if data['id'] in room:
-        print("existe")
-        room[data['id']][1] = sid
-        print(sid)
-    else: 
-        print("no existe")
-        room[data['id']] = [sid, None] 
-        print(sid)
-    
-@sio.on('disconnection')
-async def disconnect(sid, data):
-    print("disconnect room ", data['id'])
-    
-    sio.leave_room(sid, data['id'])
-    saveMov(data['id'], mov[str(data['id'])])
-    mov[str(data['id'])] = ""
-    if data['id'] in room:
-        del room[data['id']]
-        
-@sio.on("createGame")
-async def do_createGame(sid, data, id: int):
-#def do_createGame(id: int = Depends(verify_token)):
-    if id not in room:
-        exito, idSala = createGame(id, data)
-        if exito:
-            room[id] = idSala
-            sio.enter_room(sid, idSala)
-        return True
-    else: 
-        return False
-    
-@sio.on("cancelcCreateGame")
-async def do_cancelCreateGame(sid, data, id: int):
-#def do_createGame(id: int = Depends(verify_token)):
-    if id in room:
-        exito = deleteGame(id, data)
-        if exito:
-            idSala = room[id]
-            room.remove(id)
-            sio.leave_room(sid, idSala)
-        return True
-    else: 
-        return False
-        
-@sio.on('sendMsg')
-async def sendMsg(sid, data):
-    print("send message to room ", data['id'])
-    #guardar mensaje si es necesario
-    sio.emit('my msg', data["msg"], room=data['id'], skip_sid=sid)
-    
-@sio.on('doMov')
-async def doMov(sid, data):
-    print("do mov on game ", data['id'])
-    #guardar movimiento
-    mov[str(data['id'])] += data["mov"]
-    sio.emit('my mov', data["mov"], room=data['id'], skip_sid=sid)
 
