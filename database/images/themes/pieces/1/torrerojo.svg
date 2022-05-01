@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 67 67" style="enable-background:new 0 0 67 67;" xml:space="preserve">
+<style type="text/css">
+	.st0{font-family:'Arial-ItalicMT';}
+	.st1{font-size:18px;}
+	.st2{fill:#FEDAA4;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;}
+	.st3{fill:none;stroke:#CC0000;stroke-width:2;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:3.5826;}
+	.st4{fill:none;stroke:#CC0000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5.8976;}
+</style>
+<g transform="translate(-9.6874 -11.518)">
+	<text transform="matrix(1 0 0 1 11.542 51.5312)" class="st0 st1"> </text>
+	<g>
+		<g transform="translate(-12.063 1.2678)">
+			<circle class="st2" cx="55.2" cy="43.8" r="32.5"/>
+			<circle class="st3" cx="55.2" cy="43.7" r="29.1"/>
+		</g>
+		<g transform="matrix(1.4744 0 0 1.4744 -725.32 -912.09)">
+			<rect x="515.2" y="644.2" class="st4" width="12.1" height="10.2"/>
+			<g transform="translate(1e-4 1.1401)">
+				<rect x="512.5" y="654.3" class="st4" width="17.4" height="2"/>
+				<g transform="translate(5e-5 -.73329)">
+					<rect x="510.7" y="658" class="st4" width="21" height="2.4"/>
+				</g>
+			</g>
+			<path class="st4" d="M530.2,637.5h-3.9v2.5h-3.2v-2.5h-3.8v2.5h-3.2v-2.5h-3.9l0,5.7h18V641L530.2,637.5z"/>
+		</g>
+	</g>
+</g>
+</svg>
