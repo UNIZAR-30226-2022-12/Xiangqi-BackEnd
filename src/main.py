@@ -108,7 +108,7 @@ def do_getRanking():
 
 @app.get("/do-getShopSkinList")
 def do_getShopSkinList():
-    skinList = getShopSkinList()
+    skinList = getShopSkinsList()
     return skinList
 
 @app.post("/do-buySkin/{skinId}/{id}")
@@ -119,7 +119,7 @@ def do_buySkin(skinId: int, id: int = Depends(verify_token)):
     
 @app.get("/do-getUserSkinList")
 def do_getUserSkinList(id: int = Depends(verify_token)):
-    skinList = getUserSkinList(id)
+    skinList = getUserSkinsList(id)
     return skinList
 
 @app.post("/do-editUserSkin/{skinId}/{id}")

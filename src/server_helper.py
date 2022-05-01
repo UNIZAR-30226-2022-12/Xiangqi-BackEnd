@@ -495,7 +495,7 @@ def buySkin(id,skinId):
     
     if existSkin:
         _, user = getUser(id, cnx)
-        userPoints = user[Usuario.puntos]
+        userPoints = user[Usuarios.puntos]
         skinPrice = skin[Skins.precio]
         payOK = updateUserPoints(id, (userPoints-skinPrice), cnx)
         returnValue = addBoughtSkin(user, skin, cnx)    

@@ -45,6 +45,16 @@ def searchRandomOpponent(sid, data):
             print(idSala)
             sio.enter_room(sid, str(idSala))
     sio.emit('returnSearch', {'exito': False})
+    
+@sio.event
+def cancelSearch(sid, data):
+    if data['id'] in wait:
+        exito = deleteGame(data['id'], data)
+        if exito:
+            idSala = wait['id']
+            wait.remove(data['id'])
+            sio.leave_room(sid, str(idSala))
+        return True
 
 @sio.event
 def doMov(sid, data):
@@ -78,4 +88,10 @@ def enterRoom(sid, data):
 def leaveRoom(sid, data):
     print(sid, "HAS LEAVED")
     sio.leave_room(sid, str(data['id']))
+    
+@sio.event
+def sendMsg(sid, data):
+    print("send message to room ", data['id'])
+    #guardar mensaje si es necesario
+    sio.emit('my msg', data["msg"], skip_sid=sid)
 
