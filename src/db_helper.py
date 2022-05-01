@@ -4,6 +4,7 @@
 #
 #----------------------------------------------------------------
 from curses.ascii import US
+import datetime
 import mysql.connector
 from mysql.connector import RefreshOption
 
@@ -27,8 +28,8 @@ changePwdQuery = "UPDATE Usuarios SET pwd = %s, salt = %s WHERE correo = %s"
 editUserQuery = "UPDATE Usuarios SET pwd = %s, salt = %s, nick = %s, name = %s, birthDate = %s, pais = %s WHERE id = %s"
 deleteUserQuery = "DELETE FROM Usuarios WHERE id = %s"
 
-insertGameQuery =  ("INSERT INTO Partidas (id, roja, negra, estado, movimientos, fechaInicio, lastMove) "
-        "VALUE (%s, %s, %s, %s, %s, %s, %s);")
+insertGameQuery =  ("INSERT INTO Partidas (roja, negra, estado, movimientos, fechaInicio, lastMove) "
+        "VALUE (%s, %s, %s, %s, %s, %s);")
 deleteGameIdQuery = "DELETE FROM Partidas WHERE id = %s"
 guardarMovQuery = ("UPDATE Partidas SET movimientos = CONCAT(movimientos, %s) WHERE id = %s")
 getGameQuery = "SELECT * FROM Partidas WHERE id = %s"
@@ -41,7 +42,24 @@ userGameWon = "SELECT us.id, count(*) AS game FROM Usuarios us, Partidas p WHERE
 userGameStat = "SELECT played.id, played.game AS pg, won.game AS wg FROM (" + userGamePlayed + ") played, (" + userGameWon + ") won WHERE played.id = won.id" 
 rankingQuery = "SELECT us.id, us.nick, us.pais, c.code, c.bandera, us.rango, ug.pg, ug.wg FROM Usuarios us, Country c, (" + userGameStat + ") ug WHERE us.pais = c.name AND us.id = ug.id ORDER BY ug.wg DESC"
 
-#rankQuery = "SELECT (nick, pais, rango, (SELECT COUNT (*) FROM Partidas, Usuarios WHERE (roja = id) OR (negra = id)), (SELECT COUNT (*) FROM Partidas, Usuarios WHERE (roja = id AND estado = 1) OR (negra = id AND estado = 2)) FROM Usuarios WHERE id = %s"
+#---shopping queries
+#checkStateSkinQuery = "SELECT * FROM Skins s, Tiene t, Usuarios us WHERE (s.skinId <> t.skinId) AND (us.id <> t.usuario) AND s.skinId = %s AND us.id = %s "
+#Consulta 1 = Sacar todas las skins que tiene un usuario
+#Consulta 2 = Diferencia <todasSkinsTienda> - <todasSkinsUsuario>
+#buyBoardSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us, Tiene t WHERE (" + checkStateSkinQuery + ") AND s.tipo = 1 AND s.precio >= us.puntos" 
+#buyTokenSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us, Tiene t WHERE (" + checkStateSkinQuery + ") AND s.tipo = 0 AND s.precio >= us.puntos"
+showAllSkinsQuery = "SELECT * FROM Skins"
+selectSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us WHERE s.precio <= us.puntos AND s.skinId = %s"
+addNewUserSkinQuery = "INSERT INTO Tiene (skinId, usuario) VALUE (%s, %s);"
+editUserPointsQuery = "UPDATE Usuario SET puntos = %s WHERE id = %s"
+
+#---user skins queries
+#selectBoardQuery = "SELECT t.skinId FROM Tiene t, Skins s WHERE s.tipo = 1 AND t.skinId = %s"
+#selectGameTokenQuery = "SELECT t.skinId FROM Tiene t, Skins s WHERE s.tipo = 0 AND t.skinId = %s"
+getUserSkinsQuery = "SELECT * FROM Tiene t WHERE t.usuario = %s"
+selectUserSkinQuery = "SELECT t.skinId FROM Tiene t WHERE t.skinId = %s and t.usuario = %s"
+changeUserBoardSkinQuery = "UPDATE Usuario SET tableroSkin = %s WHERE id = %s"
+changeUserTGSkinQuery = "UPDATE Usuario SET fichaSkin = %s WHERE id = %s"
 
 
 
@@ -133,7 +151,7 @@ def editUser(id, data, cnx):
 
     except mysql.connector.Error as error:
         exito = False
-        print("Failed to edit record into Laptop table {}".format(error))
+        print("Failed editUser {}".format(error))
     finally:
         cursor.close()
         print("MySQL connection is closed")
@@ -149,7 +167,7 @@ def deleteUser(id, cnx):
 
     except mysql.connector.Error as error:
         exito = False
-        print("Failed to edit record into Laptop table {}".format(error))
+        print("Failed deleteUser {}".format(error))
     finally:
         cursor.close()
         print("MySQL connection is closed")
@@ -165,7 +183,7 @@ def validateUser(correo, cnx):
 
     except mysql.connector.Error as error:
         exito = False
-        print("Failed to validate user into Laptop table {}".format(error))
+        print("Failed validateUser {}".format(error))
     finally:
         cursor.close()
         return exito
@@ -180,7 +198,7 @@ def chageUserPwd(correo, pwd, salt, cnx):
         
     except mysql.connector.Error as error:
         exito = False
-        print("Failed to change user password into Laptop table {}".format(error))
+        print("Failed changeUserPwd {}".format(error))
     finally:
         cursor.close()
         return exito
@@ -213,25 +231,45 @@ def usersRanking(cnx):
         rankList = cursor.fetchall()
         print(rankList)
     except mysql.connector.Error as error:
-        print("Failed to get RankingList into Laptop table {}".format(error))
+        print("Failed userRanking {}".format(error))
     finally:
         cursor.close()     
         return rankList 
     
 
 def insertNewGame(id, cnx):
+    idPartida = -1
+    exito = False
     try:
         exito = True
         cursor = cnx.cursor()
         
-        cursor.execute(insertGameQuery, (id, None, 0, "", None, None))
+        cursor.execute(insertGameQuery, (id, 14, 0, "", datetime.datetime.now(), datetime.datetime.now()))
+        print("hola")
+
+        idPartida = cursor.lastrowid
         cnx.commit()
     except mysql.connector.Error as error:
-        print("Failed to get RankingList into Laptop table {}".format(error))
+        print("Failed insertNewGame {}".format(error))
         exito = False
     finally:
         cursor.close()     
-        return exito 
+        return exito, idPartida
+    
+def insertGame(id, id2, cnx):
+    try:
+        cursor = cnx.cursor()
+        
+        cursor.execute(insertGameQuery, (id, id2, 0, "", datetime.datetime.now(), None))
+        cnx.commit()
+        print("buenas")
+        idPartida = cursor.lastrowid
+    except mysql.connector.Error as error:
+        print("Failed insertGame {}".format(error))
+        return -1
+    finally:
+        cursor.close()     
+        return idPartida 
     
 def deleteGameId(id, cnx):
     try:
@@ -241,7 +279,7 @@ def deleteGameId(id, cnx):
         cursor.execute(deleteGameIdQuery, (id,))
         cnx.commit()
     except mysql.connector.Error as error:
-        print("Failed todelte game into Laptop table {}".format(error))
+        print("Failed deleteGameId {}".format(error))
         exito = False
     finally:
         cursor.close()     
@@ -254,7 +292,7 @@ def getGame(id, cnx):
         cursor.execute(getGameQuery, (id,))
         game = cursor.fetchone()
     except mysql.connector.Error as error:
-        print("Failed to get game into Laptop table {}".format(error))
+        print("Failed getGame {}".format(error))
     finally:
         cursor.close()     
         return game
@@ -267,7 +305,7 @@ def joinRandomGame(id, idPartida, cnx):
         cnx.commit()
         
     except mysql.connector.Error as error:
-        print("Failed to get RankingList into Laptop table {}".format(error))
+        print("Failed joinRandomGame {}".format(error))
         return False
     finally:
         cursor.close()     
@@ -279,9 +317,107 @@ def guardarMov(id, mov, cnx):
         cursor.execute(guardarMovQuery, (mov, id)) 
         cnx.commit()
     except mysql.connector.Error as error:
-        print("Failed to save into Laptop table {}".format(error))
+        print("Failed guardarMov {}".format(error))
         return False
     finally:
         cursor.close()     
         return True
-#
+
+####################################################
+# Funciones relacionadas con la gestión de los skins
+####################################################
+def getAllShopSkins(cnx):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(showAllSkinsQuery)
+        skinShopList = cursor.fetchall()
+        print(skinShopList)
+    except mysql.connector.Error as error:
+        print("Failed to get RankingList into Laptop table {}".format(error))
+    finally:
+        cursor.close()     
+        return skinShopList
+       
+def getSelectedShopSkin(skinId, cnx):
+    cursor = cnx.cursor()
+    cursor.execute(buySkinQuery, (skinId,))
+    shopSkin = cursor.fetchOne()
+    exist = shopSkin != None    
+    return exist, skinUser  
+    
+def updateUserPoints(id, newScore, cnx):
+    try:
+        cursor = cnx.cursor()
+        exito = True
+        cursor.execute(editUserPointsQuery,newScore,id)
+        cnx.commit()
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to edit userPoints into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        print("MySQL connection is closed")
+        return exito
+
+def addBoughtSkin(skin, user, cnx):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(addNewUserSkinQuery,skin,user)
+        cnx.commit()
+        exito = True
+
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to insert bought skin into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        print("MySQL connection is closed")
+        return exito    
+
+def getAllUserSkins(id, cnx):
+    try:
+        cursor = cnx.cursor()
+        cursor.execute(getUserSkinsQuery, (id,))
+        userSkinsList = cursor.fetchall()
+        print(userSkinsList)
+    except mysql.connector.Error as error:
+        print("Failed to get RankingList into Laptop table {}".format(error))
+    finally:
+        cursor.close()     
+        return userSkinsList
+
+def getSelectedUserSkin(skinId, id, cnx):
+    cursor = cnx.cursor()
+    
+    cursor.execute(selectUserSkinQuery, (skinId,id,))
+    userSkin = cursor.fetchone()
+    exist = userSkin != None
+    cursor.close()
+    return exist, skinUser
+
+def changeUserBoardSkin(skinId, id, cnx):
+    try:
+        cursor = cnx.cursor()        
+        cursor.execute(changeUserBoardSkinQuery,(skinId,id,))
+        exito = True
+        cnx.commit()
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to change user board skin into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        return exito   
+
+def changeUserTGSkin(skinId, id, cnx):
+    try:
+        cursor = cnx.cursor()        
+        cursor.execute(changeUserTGSkinQuery,(skinId,id,))
+        exito = True
+        cnx.commit()
+    except mysql.connector.Error as error:
+        exito = False
+        print("Failed to change user token game skin into Laptop table {}".format(error))
+    finally:
+        cursor.close()
+        return exito

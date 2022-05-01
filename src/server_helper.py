@@ -45,12 +45,15 @@ def checkPwd(pwd, salt, password):
     else:
         return False
     
+#no usar este metodo
 def cargarTablero(movimientos):
-    tablero = TABLERO
+    tablero = []
     for mov in wrap(movimientos, 4):
         tablero[int(mov[2])][int(mov[3])] = tablero[int(mov[0])][int(mov[1])]
         tablero[int(mov[0])][int(mov[1])] = P.hh
-    return tablero   
+    return tablero  
+
+ 
         
 def userProfile(id, cnx):
     _, user = getUser(id, cnx)
@@ -113,7 +116,7 @@ def profileStatistics(id, cnx):
 
     for game in userGames:
         latest = False
-        gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
+        gameDate = game[Partidas.fechaInicio].date()
         if gameDate > one_week_ago:
             latestGames.append(game)
             latest = True
@@ -135,40 +138,42 @@ def profileStatistics(id, cnx):
     returnValue['diaGanadas'] = [1, 0, 0, 0, 0, 0, 0]
     returnValue['diaJugadas'] = [1, 0, 0, 0, 0, 0, 0]
     for game in latestWin:
-        gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
+        gameDate = game[Partidas.fechaInicio].date()
         days = (today - gameDate).days
         if days >= 0 and days < 7:
             returnValue['diaGanadas'][days] += 1
     for game in latestGames:
-        gameDate = datetime.datetime.strptime(game[Partidas.fechaInicio], '%Y-%m-%d').date()
+        gameDate = game[Partidas.fechaInicio].date()
         days = (today - gameDate).days
         if days >= 0 and days < 7:
             returnValue['diaJugadas'][days] += 1
     return returnValue
 
+#no usar
 def calcMovepieza(tablero, pieza, f, c):
-    if pieza >= Piezas.pr1 and pieza <= Piezas.pr4:
+    #if pieza >= Piezas.pr1 and pieza <= Piezas.pr4:
         if f >= 5:
             return [(f-1, c)]
         else:
             return [(f-1, c), (f, c-1), (f, c+1)] 
-    elif pieza >= Piezas.pn1 and pieza <= Piezas.pn4:
+    #elif pieza >= Piezas.pn1 and pieza <= Piezas.pn4:
         if f <= 4:
             return [(f+1, c)]
         else:
             return [(f+1, c), (f, c-1), (f, c+1)] 
 
+#no usar
 def calcMove(tablero, equipo):
     move = []
     f = 0
     c = 0
     for fila in tablero:
         for pieza in fila:
-            if pieza in equipoRojo and equipo == 0:
+            #if pieza in equipoRojo and equipo == 0:
                 move[abs(pieza)-1] = calcMovepieza(tablero, pieza, f, c)
-            elif pieza in equipoNegro and equipo == 1:
+            #elif pieza in equipoNegro and equipo == 1:
                 move[abs(pieza)-1] = calcMovepieza(tablero, pieza, f, c)
-            c+=1
+            #c+=1
         f+=1    
         
     
@@ -204,7 +209,6 @@ def registerUser(data : User):
                               database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT) 
     exist, _ = getUserEmail(data.email, cnx)
-
     returnValue = False
     if not exist: #si no existe el usuario
         print("No existe")
@@ -334,7 +338,7 @@ def forgotPwd(correo):
         <html>
             <body>
                 <p><b>Recuperacion de la contraseña</b>
-                    Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Recuperar contraseña</a>
+                    Haz click en el enlace <a href="http://psoftbucket.s3-website-eu-west-1.amazonaws.com/#/itsukieslamejorquintilliza?email=""" + correo + """">Recuperar contraseña</a>
                 </p>
             </body>
         </html>
@@ -364,7 +368,7 @@ def sendEmail(correo):
         <html>
             <body>
                 <p><b>Validación de la cuenta de usuario</b>
-                    Haz click en el enlace <a href="http://localhost:8080/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
+                    Haz click en el enlace <a href="http://psoftbucket.s3-website-eu-west-1.amazonaws.com/#/itsukieslamejorquintilliza?email=""" + correo + """">Validar Cuenta</a> 
                     para validar tu cuenta de usuario.
                 </p>
             </body>
@@ -393,12 +397,25 @@ def getRanking():
     cnx.close()
     return ranking
 
+###############################
+#Funciones partida
+###############################
+
 def createGame(id, data):
     cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
                               database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT) 
-    returnValue = insertNewGame(id, cnx)
+    exito, idPartida = insertNewGame(id, cnx)
+    cnx.close()
+    return exito, idPartida
+
+def createNewGame(id, id2, data):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT) 
+    returnValue = insertGame(id, id2, cnx)
     cnx.close()
     return returnValue
 
@@ -451,6 +468,73 @@ def saveMov(id, mov):
                               database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT) 
     returnValue = guardarMov(id, mov, cnx)
+    cnx.close()
+    return returnValue
+
+###############################
+#Funciones skins tienda
+###############################    
+
+def getShopSkinsList():
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)  
+    skinsShopList = getAllShopSkins(cnx)
+    cnx.close()
+    return skinsShopList
+
+def buySkin(id,skinId):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    
+    existSkin, skin = getSelectedShopSkin(skinId, cnx)
+    returnValue = False
+    
+    if existSkin:
+        _, user = getUser(id, cnx)
+        userPoints = user[Usuario.puntos]
+        skinPrice = skin[Skins.precio]
+        payOK = updateUserPoints(id, (userPoints-skinPrice), cnx)
+        returnValue = addBoughtSkin(user, skin, cnx)    
+        
+    cnx.close()
+    return returnValue
+
+###############################
+#Funciones skins usuario
+###############################
+
+def getUserSkinsList(id):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    userSkinsList = getAllUserSkins(id,cnx)
+    cnx.close()
+    return userSkinsList
+
+# Modificación de la skin de usuario a utilizar para las partidas (provisional)   
+def editUserSkin(id,skinId):
+    cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
+                              host='database-1.cb2xawbk7cv6.eu-west-1.rds.amazonaws.com',
+                              database='BDpsoft')
+    cnx.cmd_refresh(RefreshOption.GRANT)
+    
+    exist, skin = getSelectedUserSkin(skinId,id,cnx)
+    returnValue = False
+    
+    if exist:
+        _, user = getUser(id,cnx)
+        if skin[Skins.tipo] == 0:
+            user[Usuarios.fichaSkin] = skinId
+            returnValue = changeUserTGSkin(skinId, id, cnx)
+        if skin[Skins.tipo] == 1:
+            user[Usuarios.tableroSkin] = skinId
+            returnValue = changeUserBoardSkin(skinId, id, cnx)
+        
     cnx.close()
     return returnValue
     
