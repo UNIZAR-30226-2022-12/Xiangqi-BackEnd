@@ -49,9 +49,13 @@ rankingQuery = "SELECT us.id, us.nick, us.pais, c.code, c.bandera, us.rango, ug.
 #buyBoardSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us, Tiene t WHERE (" + checkStateSkinQuery + ") AND s.tipo = 1 AND s.precio >= us.puntos" 
 #buyTokenSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us, Tiene t WHERE (" + checkStateSkinQuery + ") AND s.tipo = 0 AND s.precio >= us.puntos"
 showAllSkinsQuery = "SELECT * FROM Skins"
-selectSkinQuery = "SELECT s.skinId FROM Skins s, Usuarios us WHERE s.precio <= us.puntos AND s.skinId = %s"
+checkUserPointsQuery = "SELECT us.puntos FROM Usuarios us WHERE us.id = %d"
+availableSkinsQuery = "SELECT s.skinId, s.tipo, s.precio FROM Skins s, Usuarios us WHERE s.precio <= us.puntos AND us.id = %s"
+selectSkinQuery = "SELECT * FROM (" + availableSkinsQuery + ") disponible WHERE disponible.skinId = %s"
 addNewUserSkinQuery = "INSERT INTO Tiene (skinId, usuario) VALUE (%s, %s);"
 editUserPointsQuery = "UPDATE Usuario SET puntos = %s WHERE id = %s"
+
+
 
 #---user skins queries
 #selectBoardQuery = "SELECT t.skinId FROM Tiene t, Skins s WHERE s.tipo = 1 AND t.skinId = %s"
@@ -324,7 +328,7 @@ def guardarMov(id, mov, cnx):
         return True
 
 ####################################################
-# Funciones relacionadas con la gestión de los skins
+# Funciones relacionadas con la compra de una skin
 ####################################################
 def getAllShopSkins(cnx):
     try:
@@ -337,15 +341,23 @@ def getAllShopSkins(cnx):
     finally:
         cursor.close()     
         return skinShopList
-       
-def getSelectedShopSkin(skinId, cnx):
+        
+def getUserPoints(id, cnx):
     cursor = cnx.cursor()
-    cursor.execute(buySkinQuery, (skinId,))
-    shopSkin = cursor.fetchOne()
-    exist = shopSkin != None    
-    return exist, skinUser  
+    cursor.execute(getUserPointsQuery, (id, ))
+    userPoints = cursor.fetchall()
+    cursor.close()
+    return userPoints
+       
+def getSelectedShopSkin(id, skinId, cnx):
+    cursor = cnx.cursor()
+    cursor.execute(selectSkinQuery, (id, skinId, ))
+    shopSkins = cursor.fetchAll()
+    exist = (shopSkins != None)    
+    cursor.close()
+    return exist, shopSkins  
     
-def updateUserPoints(id, newScore, cnx):
+def updateUserPoints(newScore, id, cnx):
     try:
         cursor = cnx.cursor()
         exito = True
@@ -360,10 +372,10 @@ def updateUserPoints(id, newScore, cnx):
         print("MySQL connection is closed")
         return exito
 
-def addBoughtSkin(skin, user, cnx):
+def addBoughtSkin(skinId, userId, cnx):
     try:
         cursor = cnx.cursor()
-        cursor.execute(addNewUserSkinQuery,skin,user)
+        cursor.execute(addNewUserSkinQuery,(skinId, userId, ))
         cnx.commit()
         exito = True
 
@@ -375,10 +387,14 @@ def addBoughtSkin(skin, user, cnx):
         print("MySQL connection is closed")
         return exito    
 
+##################################################################
+# Funciones relacionadas con la gestión de las skins del usuario
+##################################################################
+
 def getAllUserSkins(id, cnx):
     try:
         cursor = cnx.cursor()
-        cursor.execute(getUserSkinsQuery, (id,))
+        cursor.execute(getUserSkinsQuery, (id, ))
         userSkinsList = cursor.fetchall()
         print(userSkinsList)
     except mysql.connector.Error as error:
@@ -390,7 +406,7 @@ def getAllUserSkins(id, cnx):
 def getSelectedUserSkin(skinId, id, cnx):
     cursor = cnx.cursor()
     
-    cursor.execute(selectUserSkinQuery, (skinId,id,))
+    cursor.execute(selectUserSkinQuery, (skinId, id, ))
     userSkin = cursor.fetchone()
     exist = userSkin != None
     cursor.close()

@@ -490,15 +490,16 @@ def buySkin(id,skinId):
                               database='BDpsoft')
     cnx.cmd_refresh(RefreshOption.GRANT)
     
-    existSkin, skin = getSelectedShopSkin(skinId, cnx)
+    existSkin, skin = getSelectedShopSkin(id, skinId, cnx)
     returnValue = False
     
     if existSkin:
-        _, user = getUser(id, cnx)
-        userPoints = user[Usuarios.puntos]
-        skinPrice = skin[Skins.precio]
-        payOK = updateUserPoints(id, (userPoints-skinPrice), cnx)
-        returnValue = addBoughtSkin(user, skin, cnx)    
+        userPointsT = getUserPoints(id, cnx)
+        userPoints = userPointsT[0][0]
+        skinPrice = skin[0][2]
+        userPoints = userPoints - skinPrice
+        payOK = updateUserPoints(id, userPoints, cnx)
+        returnValue = addBoughtSkin(skinId, id, cnx)    
         
     cnx.close()
     return returnValue

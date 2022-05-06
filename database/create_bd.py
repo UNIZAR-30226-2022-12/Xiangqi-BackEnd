@@ -95,33 +95,33 @@ TABLES['Solicitudes'] = (
     "  ON DELETE CASCADE ON UPDATE CASCADE"
     ");")
 
-TABLES['Chat'] = (
-    "CREATE TABLE Chat ("
-    "  id INT NOT NULL,"
-    "  partidaId INT NOT NULL," 
-    "  jugadorRoja INT NOT NULL,"
-    "  jugadorNegra INT NOT NULL,"
-    "  FOREIGN KEY (partidaId) REFERENCES Partidas(id)"
-    "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (jugadorRoja) REFERENCES Usuarios(id)"
-    "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (jugadorNegra) REFERENCES Usuarios(id)"
-    "  ON DELETE CASCADE ON UPDATE CASCADE"   
-    ");")
+#TABLES['Chat'] = (
+#    "CREATE TABLE Chat ("
+#    "  id INT NOT NULL,"
+#    "  partidaId INT NOT NULL," 
+#    "  jugadorRoja INT NOT NULL,"
+#    "  jugadorNegra INT NOT NULL,"
+#    "  FOREIGN KEY (partidaId) REFERENCES Partidas(id)"
+#    "  ON DELETE CASCADE ON UPDATE CASCADE,"
+#    "  FOREIGN KEY (jugadorRoja) REFERENCES Usuarios(id)"
+#    "  ON DELETE CASCADE ON UPDATE CASCADE,"
+#    "  FOREIGN KEY (jugadorNegra) REFERENCES Usuarios(id)"
+#    "  ON DELETE CASCADE ON UPDATE CASCADE"   
+#    ");")
     
-TABLES['Mensajes'] = (
-    "CREATE TABLE Mensajes ("
-    "  id INT NOT NULL,"
-    "  chatId INT NOT NULL,"
-    "  autorId INT NOT NULL,"
-    "  nickname INT NOT NULL,"
-    "  timestamp DATETIME,"
-    "  texto LONGTEXT,"
-    "  FOREIGN KEY (chatId) REFERENCES Chat(id)"
-    "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (chatId) REFERENCES Chat(id)"
-    "  ON DELETE CASCADE ON UPDATE CASCADE"
-    ");")
+#TABLES['Mensajes'] = (
+#    "CREATE TABLE Mensajes ("
+#    "  id INT NOT NULL,"
+#    "  chatId INT NOT NULL,"
+#    "  autorId INT NOT NULL,"
+#    "  nickname INT NOT NULL,"
+#    "  timestamp DATETIME,"
+#    "  texto LONGTEXT,"
+#    "  FOREIGN KEY (chatId) REFERENCES Chat(id)"
+#    "  ON DELETE CASCADE ON UPDATE CASCADE,"
+#    "  FOREIGN KEY (chatId) REFERENCES Chat(id)"
+#    "  ON DELETE CASCADE ON UPDATE CASCADE"
+#    ");")
 
 for table_name in TABLES:
     table_description = TABLES[table_name]
