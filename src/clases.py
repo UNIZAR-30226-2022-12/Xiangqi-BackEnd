@@ -49,6 +49,14 @@ class Partidas(IntEnum):
     movimientos = 4 
     fechaInicio = 5 
     lastMove = 6 
+    
+class Skins(IntEnum):
+    skinId = 0
+    tipo = 1 
+    name = 2 
+    description = 3 
+    category = 4 
+    precio = 5  
 
 class Pais(IntEnum):
     name = 0
@@ -85,3 +93,17 @@ class EmailData(BaseModel):
 
 class Image(BaseModel):
     image: bytes
+
+class IdPartida(BaseModel):
+    id: int
+    
+class Id(BaseModel):
+    id: int
+
+class Nickname(BaseModel):
+    nickname: str
+    
+class PurchaseData(BaseModel):
+    id: str
+    tipo: str
+    price: str

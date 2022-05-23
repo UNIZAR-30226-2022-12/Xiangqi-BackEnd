@@ -48,6 +48,11 @@ def do_login(data: LoginData):
     returnValue = loginUser(data)
     return returnValue
 
+@app.get("/do-getNickname/{id}")
+def do_getNickname(id: int):
+    nick = getNickname(id)
+    return nick
+
 @app.get("/do-getProfile/{id}")
 #def do_getProfile(id: int, id2: int):
 def do_getProfile(id: int, id2: int = Depends(verify_token)):
@@ -102,19 +107,25 @@ def do_deleteAccount(id: int = Depends(verify_token)):
 
 @app.get("/do-getRanking")
 #def do_getRanking(id: int = Depends(verify_token)):
-def do_getRanking():
+def do_getRanking(id: int = Depends(verify_token)):
     ranking = getRanking()
     return ranking
 
-@app.get("/do-getShopSkinList")
-def do_getShopSkinList():
-    skinList = getShopSkinsList()
-    return skinList
+@app.get("/do-getPoints")
+#def do_getRanking(id: int = Depends(verify_token)):
+def do_getPoints(id: int = Depends(verify_token)):
+    ranking = userPoints(id)
+    return ranking
 
-@app.post("/do-buySkin/{skinId}/{id}")
+@app.get("/do-getStoreItems")
+def do_getStoreItems(id: int = Depends(verify_token)):
+    shop = getStoreItems(id)
+    return shop
+
+@app.post("/do-purchaseItem")
 #def do_buySkin(skinId: int, id: int):
-def do_buySkin(skinId: int, id: int = Depends(verify_token)):
-    exito = buySkin(id,skinId)
+def do_purchaseItem(data: PurchaseData, id: int = Depends(verify_token)):
+    exito = buySkin(id, data.id, data.tipo, data.price)
     return exito
     
 @app.get("/do-getUserSkinList")
@@ -128,8 +139,61 @@ def do_editUserSkin(skinId: int, id: int = Depends(verify_token)):
     return exito
     
 @app.post("/do-loadGame")
-def do_loadGame(data, id: int):
+def do_loadGame(data: IdPartida):
 #def do_createGame(id: int = Depends(verify_token)):
-    returnValue = loadGame(id, data)
+    print("LLega: ", data.id)
+    returnValue = loadGame(data.id)
     return returnValue
+
+#busca usuarios
+@app.post("/do-searchUsers")
+def do_getSearchUsers(data: Nickname, id: int = Depends(verify_token)):
+    #users = getUsers(data.nickname)
+    users = getSearchNoFriends(data.nickname, id)
+    return users
+
+@app.get("/do-getSearchNoFriends")
+def do_getSearchNoFriends(data):
+    users = getUserNoFriends(data["id"])
+    return users
+
+@app.get("/do-getFriends")
+def do_getFriends(id: int = Depends(verify_token)):
+    users = getFriends(id)
+    return users
+
+@app.get("/do-getFriendRequests")
+def do_getFriendRequests(id: int = Depends(verify_token)):
+    users = getFriendsRequest(id)
+    return users
+
+@app.get("/do-getHistorial")
+def do_getHistorial(id: int = Depends(verify_token)):
+    returnValue = userHistorial(id)
+    return returnValue
+
+#busca usuarios
+@app.post("/do-rejectRequest")
+def do_rejectRequest(idOther: Id, id: int = Depends(verify_token)):
+
+    rejectRequest(id, idOther.id)
+    
+    return True
+
+#busca usuarios
+@app.post("/do-acceptRequest")
+def do_acceptRequest(idOther: Id, id: int = Depends(verify_token)):
+    
+    acceptRequest(id, idOther.id)
+    
+    return True
+
+#perfil sin game ni staat
+@app.get("/do-getProfileInfo/{id}")
+def do_getProfileInfo(id, id2: int = Depends(verify_token)):
+    
+    return getProfileInfo(id)
+
+
+
 
