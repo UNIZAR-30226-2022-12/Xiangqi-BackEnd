@@ -1,4 +1,5 @@
 import mysql.connector
+import datetime
 
 #datetime.datetime.now()
 
@@ -7,15 +8,22 @@ cnx = mysql.connector.connect(user='psoftDeveloper', password='psoftDeveloper',
                               database='BDpsoft')
 cursor = cnx.cursor()
 
+
+sql =  ("INSERT INTO Amigos (usuario1, usuario2) "
+        "VALUE (%s, %s);")
+value = [
+        (14, 11),
+        (10, 12),
+        (13, 10),
+        (14, 10),
+        (10, 15),
+]
 #sql =  ("SELECT * FROM Usuarios")
 
 
-cursor.execute("UPDATE Usuarios SET puntos=100 WHERE id = 11")
-
-#userList = cursor.fetchall()
-
+cursor.executemany(sql, value)
+#print(value[0])
 cnx.commit()
-
 
 cursor.close()
 cnx.close()

@@ -1,0 +1,18 @@
+1;1;Madera teka;Tablero con un dragón grabado;Tablero de madera;0
+2;1;Madera nogal;Tablero con dragones grabados;Tablero de madera;0
+3;1;Madera roble;Tablero con un grabado oriental;Tablero de madera;10
+4;1;Metal óxido;Tablero con dragones grabados;Tablero de metal;20
+5;1;Metal acero;Tablero con un dragón grabado;Tablero de metal;20
+6;1;Mármol gris;Tablero motivo ajedrezado grabado;Tablero de mármol;30
+7;1;Mármol arena;Tablero motivo ajedrezado grabado;Tablero de mármol;30
+8;1;Mármol onyx;Tablero motivo ajedrezado grabado;Tablero de mármol;30
+9;1;Mármol hielo;Tablero motivo ajedrezado grabado;Tablero de mármol;30
+10;1;Ajedrezado;Tablero motivo ajedrezado grabado;Tablero de mármol;30
+11;1;Cemento gris;Tablero con un dragón grabado;Tablero de cemento;40
+12;1;Hormigón;Tablero con un dragón grabado;Tablero de cemento;40
+1;0;Default symbols;Iconos con símbolos claros;Iconos;0
+2;0;Default Chino;Iconos tradicionales en Chino;Chino;0
+3;0;Dark symbols;Iconos con símbolos oscuros;Iconos;30
+4;0;Dark Chino;Iconos en Chino oscuros;Chino;30
+5;0;Light symbols;Iconos con símbolos claros;Iconos;60
+6;0;Light Chino;Iconos en Chino claros;Chino;60

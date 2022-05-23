@@ -10,7 +10,7 @@ cursor = cnx.cursor()
 #sql =  ("SELECT * FROM Usuarios")
 
 
-cursor.execute("SELECT * FROM Usuarios")
+cursor.execute("SELECT * FROM Partidas WHERE roja = 11 OR negra = 16")
 
 #userList = cursor.fetchall()
 for user in cursor.fetchall():

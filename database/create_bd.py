@@ -18,10 +18,13 @@ TABLES['Country'] = (
 
 TABLES['Skins'] = (
     "CREATE TABLE Skins ("
-    "  skinId INT NOT NULL AUTO_INCREMENT,"
-    "  tipo BOOL NOT NULL," # 0 skin de ficha, 1 skin de tablero
+    "  skinId INT NOT NULL,"
+    "  tipo INT NOT NULL," # 0 skin de ficha, 1 skin de tablero
+    "  name VARCHAR(50),"
+    "  description VARCHAR(100),"
+    "  category VARCHAR(50),"
     "  precio INT,"
-    "  PRIMARY KEY (skinId)"
+    "  PRIMARY KEY(skinId, tipo)"
     ");")
 
 TABLES['Usuarios'] = (
@@ -62,10 +65,11 @@ TABLES['Amigos'] = (
 TABLES['Tiene'] = (
     "CREATE TABLE Tiene ("
     "  skinId INT NOT NULL,"
+    "  tipo INT NOT NULL,"
     "  usuario INT NOT NULL,"
     "  FOREIGN KEY (usuario) REFERENCES Usuarios(id)"
     "  ON DELETE CASCADE ON UPDATE CASCADE,"
-    "  FOREIGN KEY (skinId) REFERENCES Skins(skinId)"
+    "  FOREIGN KEY (skinId, tipo) REFERENCES Skins(skinId, tipo)"
     "  ON DELETE CASCADE ON UPDATE CASCADE"
     ");")
 

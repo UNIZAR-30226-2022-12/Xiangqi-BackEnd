@@ -11,7 +11,7 @@ cursor = cnx.cursor()
 #sql =  ("SELECT * FROM Usuarios")
 
 
-cursor.execute("DELETE FROM Partidas")
+cursor.execute("DELETE FROM Skins")
 
 cnx.commit()
 
