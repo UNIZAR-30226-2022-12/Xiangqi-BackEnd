@@ -464,7 +464,7 @@ def forgotPwd(correo):
         <html>
             <body>
                 <p><b>Recuperacion de la contraseña</b>
-                    Haz click en el enlace <a href="http://psoftbucket.s3-website-eu-west-1.amazonaws.com/#/itsukieslamejorquintilliza?email=""" + correo + """">Recuperar contraseña</a>
+                    Haz click en el enlace <a href="http://psoftbucket.s3-website-eu-west-1.amazonaws.com/#/recPwd?email=""" + correo + """">Recuperar contraseña</a>
                 </p>
             </body>
         </html>
